@@ -50,6 +50,11 @@ jobs:
         run: |
           chmod +x gradlew
           chmod +x download_prebuilt_engine.sh
+          chmod +x ci_validator.py
+
+      - name: Run CI Pre-Flight One-Shot Reviewer
+        run: |
+          python3 ci_validator.py
 
       - name: Cache Prebuilt Chromium Native Engine
         id: cache-engine

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_color_non_empty">#FFFFFF</color>
+    <color name="dark_background_color_non_empty">#121212</color>
+    <color name="blue_when_enabled_dark">#1A73E8</color>
+    <color name="blue_when_enabled_list">#1A73E8</color>
+    <color name="card_hover_press_overlay_color_list">#1A73E8</color>
+    <color name="card_hover_press_overlay_color_list_baseline_dark">#1A73E8</color>
+    <color name="chip_background_color">#1A73E8</color>
+    <color name="chip_ripple_color">#1A73E8</color>
+    <color name="chip_state_layer_color">#1A73E8</color>
+    <color name="chip_text_color_secondary_list">#1A73E8</color>
+    <color name="color_on_primary_with_alpha_12">#1A73E8</color>
+    <color name="color_on_primary_with_alpha_8">#1A73E8</color>
+    <color name="color_on_surface_with_alpha_10">#1A73E8</color>
+    <color name="color_on_surface_with_alpha_12">#1A73E8</color>
+    <color name="color_on_surface_with_alpha_16">#1A73E8</color>
+    <color name="color_on_surface_with_alpha_8">#1A73E8</color>
+    <color name="color_primary_with_alpha_10">#1A73E8</color>
+    <color name="color_primary_with_alpha_5">#1A73E8</color>
+    <color name="color_primary_with_alpha_50">#1A73E8</color>
+    <color name="context_menu_header_circle_bg_color">#1A73E8</color>
+    <color name="default_icon_color_accent1_tint_list">#1A73E8</color>
+    <color name="default_icon_color_disabled">#1A73E8</color>
+    <color name="default_icon_color_light_tint_list">#1A73E8</color>
+    <color name="default_icon_color_secondary_tint_list">#1A73E8</color>
+    <color name="default_icon_color_tint_list">#1A73E8</color>
+    <color name="default_icon_color_white_tint_list">#1A73E8</color>
+    <color name="default_text_color_accent1_tint_list">#1A73E8</color>
+    <color name="default_text_color_disabled_list">#1A73E8</color>
+    <color name="default_text_color_hint_list">#1A73E8</color>
+    <color name="default_text_color_light_list">#1A73E8</color>
+    <color name="default_text_color_link_tint_list">#1A73E8</color>
+    <color name="default_text_color_list">#1A73E8</color>
+    <color name="default_text_color_list_baseline">#1A73E8</color>
+    <color name="default_text_color_on_accent1_baseline_list">#1A73E8</color>
+    <color name="default_text_color_on_accent1_container_baseline_light_list">#1A73E8</color>
+    <color name="default_text_color_on_accent1_container_list">#1A73E8</color>
+    <color name="default_text_color_on_accent1_list">#1A73E8</color>
+    <color name="default_text_color_on_inverse_surface_list">#1A73E8</color>
+    <color name="default_text_color_secondary_light_list">#1A73E8</color>
+    <color name="default_text_color_secondary_list">#1A73E8</color>
+    <color name="default_text_color_secondary_list_baseline">#1A73E8</color>
+    <color name="dialog_bg_color">#1A73E8</color>
+    <color name="distilled_page_pref_background_color">#1A73E8</color>
+    <color name="divider_color">#1A73E8</color>
+    <color name="filled_button_bg_dynamic_list">#1A73E8</color>
+    <color name="filled_button_ripple_color">#1A73E8</color>
+    <color name="google_pay_icon_color">#1A73E8</color>
+    <color name="home_surface_ui_background_color">#1A73E8</color>
+    <color name="immersive_video_button_tint">#1A73E8</color>
+    <color name="list_menu_item_text_color_list">#1A73E8</color>
+    <color name="material_dynamic_primary10">#1A73E8</color>
+    <color name="material_dynamic_primary20">#1A73E8</color>
+    <color name="material_dynamic_primary30">#1A73E8</color>
+    <color name="material_dynamic_primary40">#1A73E8</color>
+    <color name="material_dynamic_primary50">#1A73E8</color>
+    <color name="material_dynamic_primary60">#1A73E8</color>
+    <color name="material_dynamic_primary70">#1A73E8</color>
+    <color name="material_dynamic_primary80">#1A73E8</color>
+    <color name="material_dynamic_primary90">#1A73E8</color>
+    <color name="material_dynamic_primary95">#1A73E8</color>
+    <color name="material_dynamic_secondary30">#1A73E8</color>
+    <color name="material_dynamic_secondary40">#1A73E8</color>
+    <color name="material_dynamic_secondary50">#1A73E8</color>
+    <color name="material_dynamic_secondary60">#1A73E8</color>
+    <color name="material_dynamic_secondary70">#1A73E8</color>
+    <color name="material_dynamic_secondary80">#1A73E8</color>
+    <color name="material_dynamic_secondary90">#1A73E8</color>
+    <color name="material_dynamic_tertiary80">#1A73E8</color>
+    <color name="material_dynamic_tertiary90">#1A73E8</color>
+    <color name="menu_chip_background">#1A73E8</color>
+    <color name="navigation_pane_icon_tint_list">#1A73E8</color>
+    <color name="navigation_pane_text_color_list">#1A73E8</color>
+    <color name="omnibox_suggestion_dropdown_bg">#1A73E8</color>
+    <color name="reader_mode_prefs_font_style_button_background_color">#1A73E8</color>
+    <color name="reader_mode_prefs_font_style_button_text_color">#1A73E8</color>
+    <color name="reader_mode_prefs_theme_button_stroke_color">#1A73E8</color>
+    <color name="ripple_material_dark">#1A73E8</color>
+    <color name="search_suggestion_bg_color">#1A73E8</color>
+    <color name="selection_control_button_tint_list">#1A73E8</color>
+    <color name="tab_highlight_card_bg_color">#1A73E8</color>
+    <color name="tab_strip_button_bg_hover_tint">#1A73E8</color>
+    <color name="tab_strip_button_bg_incognito_hover_tint">#1A73E8</color>
+    <color name="tab_strip_button_bg_incognito_peripheral_pressed_tint">#1A73E8</color>
+    <color name="tab_strip_button_bg_peripheral_pressed_tint">#1A73E8</color>
+    <color name="tab_strip_button_bg_pressed_tint">#1A73E8</color>
+    <color name="tab_strip_glic_button_bg_hover_tint">#1A73E8</color>
+    <color name="tab_strip_glic_button_bg_pressed_tint">#1A73E8</color>
+    <color name="text_button_ripple_color_list">#1A73E8</color>
+    <color name="text_highlight_color">#1A73E8</color>
+    <color name="tile_view_icon_background_color">#1A73E8</color>
+    <color name="tonal_button_bg_list">#1A73E8</color>
+    <color name="tonal_button_icon_tint_list">#1A73E8</color>
+    <color name="toolbar_text_box_background_incognito">#1A73E8</color>
+    <color name="toolbar_text_box_bg_color">#1A73E8</color>
+    <color name="vertical_tabs_button_background_color">#1A73E8</color>
+    <color name="widget_bg">#1A73E8</color>
+    <color name="widget_searchbox_bg">#1A73E8</color>
+    <color name="xr_toolbar_bg">#1A73E8</color>
+    <dimen name="abc_dialog_min_width_major">16dp</dimen>
+    <dimen name="abc_dialog_min_width_minor">16dp</dimen>
+    <dimen name="abc_dialog_padding_material">16dp</dimen>
+    <dimen name="abc_dialog_padding_top_material">16dp</dimen>
+    <dimen name="ai_chip_horizontal_inset">16dp</dimen>
+    <dimen name="ai_chip_vertical_inset">16dp</dimen>
+    <item name="bg_tabstrip_tab_folio_startup_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="bookmark_search_box_row_margin_bottom_default">16dp</dimen>
+    <item name="chip_outline_alpha" type="dimen" format="float">1.0</item>
+    <item name="chip_outline_disabled_alpha" type="dimen" format="float">1.0</item>
+    <item name="chip_outline_focused_alpha" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_focused_alpha_dark" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_focused_alpha_light" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_hover_alpha_dark" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_hover_alpha_light" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_pressed_alpha_dark" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_pressed_alpha_light" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_selected_focused_alpha" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_selected_hover_alpha" type="dimen" format="float">1.0</item>
+    <item name="chip_state_layer_selected_pressed_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="close_button_height">48dp</dimen>
+    <dimen name="close_button_height_desktop">48dp</dimen>
+    <dimen name="close_button_width">16dp</dimen>
+    <dimen name="close_button_width_desktop">16dp</dimen>
+    <dimen name="composeplate_view_height">48dp</dimen>
+    <dimen name="composeplate_view_margin_top">16dp</dimen>
+    <dimen name="context_menu_header_circle_bg_diameter">16dp</dimen>
+    <dimen name="context_menu_header_circle_bg_margin">16dp</dimen>
+    <dimen name="context_menu_header_image_max_size">24dp</dimen>
+    <dimen name="context_menu_list_lateral_padding">16dp</dimen>
+    <dimen name="context_menu_padding">16dp</dimen>
+    <item name="default_disabled_alpha" type="dimen" format="float">1.0</item>
+    <item name="default_focused_alpha" type="dimen" format="float">1.0</item>
+    <item name="default_focused_hovered_alpha" type="dimen" format="float">1.0</item>
+    <item name="default_hovered_alpha" type="dimen" format="float">1.0</item>
+    <item name="default_pressed_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="fake_search_box_end_padding">16dp</dimen>
+    <dimen name="fake_search_box_icon_margin_end">16dp</dimen>
+    <dimen name="fake_search_box_icon_size">24dp</dimen>
+    <dimen name="fake_search_box_start_padding">16dp</dimen>
+    <item name="filled_button_bg_disabled_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="glic_menu_end_icon_width">16dp</dimen>
+    <dimen name="glic_menu_end_icon_width_desktop">16dp</dimen>
+    <dimen name="glic_task_menu_max_width">16dp</dimen>
+    <dimen name="glic_task_menu_max_width_desktop">16dp</dimen>
+    <dimen name="hub_xr_background_rounded_corner_radius">8dp</dimen>
+    <item name="icon_animated_faded_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="incognito_indicator_lateral_end_padding">16dp</dimen>
+    <dimen name="incognito_indicator_lateral_margin">16dp</dimen>
+    <dimen name="incognito_indicator_lateral_start_padding">16dp</dimen>
+    <dimen name="incognito_indicator_text_lateral_start_margin">16dp</dimen>
+    <dimen name="location_bar_action_icon_height">48dp</dimen>
+    <dimen name="location_bar_action_icon_height_desktop">48dp</dimen>
+    <dimen name="location_bar_action_icon_margin_horizontal">16dp</dimen>
+    <dimen name="location_bar_action_icon_margin_horizontal_desktop">16dp</dimen>
+    <dimen name="location_bar_action_icon_width">16dp</dimen>
+    <dimen name="location_bar_action_icon_width_desktop">16dp</dimen>
+    <dimen name="location_bar_end_padding">16dp</dimen>
+    <dimen name="location_bar_height">48dp</dimen>
+    <dimen name="location_bar_lock_icon_height">48dp</dimen>
+    <dimen name="location_bar_lock_icon_width">16dp</dimen>
+    <dimen name="location_bar_min_url_width">16dp</dimen>
+    <dimen name="location_bar_start_padding">16dp</dimen>
+    <dimen name="location_bar_tablet_fusebox_popup_inset">16dp</dimen>
+    <dimen name="location_bar_url_text_size">24dp</dimen>
+    <item name="mini_thumbnail_placeholder_overlay_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="ntp_fake_search_box_text_size">24dp</dimen>
+    <dimen name="omnibox_suggestion_dropdown_round_corner_radius">8dp</dimen>
+    <dimen name="pref_autofill_field_bottom_margin">16dp</dimen>
+    <dimen name="pref_autofill_field_horizontal_margin">16dp</dimen>
+    <dimen name="pref_autofill_field_horizontal_padding">16dp</dimen>
+    <dimen name="pref_autofill_field_large_top_margin">16dp</dimen>
+    <dimen name="pref_autofill_field_top_margin">16dp</dimen>
+    <dimen name="pref_autofill_touch_target_padding">16dp</dimen>
+    <dimen name="preferences_detail_width">16dp</dimen>
+    <dimen name="search_box_padding_for_shadow_vertical">16dp</dimen>
+    <dimen name="settings_page_card_icon_end_margin">16dp</dimen>
+    <dimen name="settings_page_margin_between_card_name_and_last_four_digits">16dp</dimen>
+    <item name="tab_strip_button_bg_hover_alpha" type="dimen" format="float">1.0</item>
+    <item name="tab_strip_button_bg_peripheral_pressed_alpha" type="dimen" format="float">1.0</item>
+    <item name="tab_strip_button_bg_pressed_alpha" type="dimen" format="float">1.0</item>
+    <item name="tab_strip_glic_button_bg_hover_alpha" type="dimen" format="float">1.0</item>
+    <item name="tab_strip_glic_button_bg_incognito_alpha" type="dimen" format="float">1.0</item>
+    <item name="tab_strip_glic_button_bg_pressed_alpha" type="dimen" format="float">1.0</item>
+    <item name="tab_strip_glic_button_icon_incognito_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="tab_strip_height">48dp</dimen>
+    <dimen name="tab_switcher_menu_vertical_padding">16dp</dimen>
+    <item name="text_highlight_alpha" type="dimen" format="float">1.0</item>
+    <dimen name="toolbar_button_height">48dp</dimen>
+    <dimen name="toolbar_button_height_desktop">48dp</dimen>
+    <dimen name="toolbar_button_margin_horizontal">16dp</dimen>
+    <dimen name="toolbar_button_margin_horizontal_desktop">16dp</dimen>
+    <dimen name="toolbar_button_margin_vertical">16dp</dimen>
+    <dimen name="toolbar_button_margin_vertical_desktop">16dp</dimen>
+    <dimen name="toolbar_button_width">16dp</dimen>
+    <dimen name="toolbar_button_width_desktop">16dp</dimen>
+    <dimen name="toolbar_edge_padding">16dp</dimen>
+    <dimen name="toolbar_height_no_shadow">48dp</dimen>
+    <dimen name="webapp_splash_image_size_ideal">24dp</dimen>
+    <dimen name="webapp_splash_large_title_margin_bottom">16dp</dimen>
+    <dimen name="webapp_splash_offset">16dp</dimen>
+    <dimen name="widget_corner_radius">8dp</dimen>
+</resources>
