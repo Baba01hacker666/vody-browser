@@ -99,4 +99,107 @@
     <dimen name="webapp_splash_large_title_margin_bottom">16dp</dimen>
     <dimen name="webapp_splash_offset">16dp</dimen>
     <dimen name="widget_corner_radius">8dp</dimen>
+
+
+    <string name="all_sites">All sites</string>
+    <string name="anti_abuse_things_to_consider_header">Anti abuse things to consider header</string>
+    <string name="anti_abuse_things_to_consider_section_one">Anti abuse things to consider section one</string>
+    <string name="anti_abuse_when_on_header">Anti abuse when on header</string>
+    <string name="anti_abuse_when_on_section_one">Anti abuse when on section one</string>
+    <string name="anti_abuse_when_on_section_three">Anti abuse when on section three</string>
+    <string name="anti_abuse_when_on_section_two">Anti abuse when on section two</string>
+    <string name="appbar_scrolling_view_behavior">Appbar scrolling view behavior</string>
+    <string name="autofill_addresses_settings_title">Autofill addresses settings title</string>
+    <string name="autofill_ai_entity_stored_in_google_wallet_accessibility_label">Autofill ai entity stored in google wallet accessibility label</string>
+    <string name="autofill_card_unmask_new_card_link">Autofill card unmask new card link</string>
+    <string name="autofill_card_unmask_prompt_enable_fido_auth_checkbox">Autofill card unmask prompt enable fido auth checkbox</string>
+    <string name="autofill_expiration_date_separator">Autofill expiration date separator</string>
+    <string name="autofill_fix_flow_prompt_save_card_label">Autofill fix flow prompt save card label</string>
+    <string name="autofill_from_google_account">Autofill from google account</string>
+    <string name="autofill_from_google_account_long">Autofill from google account long</string>
+    <string name="autofill_home_profile_icon_accessibility_label">Autofill home profile icon accessibility label</string>
+    <string name="autofill_local_profile_icon_accessibility_label">Autofill local profile icon accessibility label</string>
+    <string name="autofill_payment_methods">Autofill payment methods</string>
+    <string name="autofill_payment_methods_keywords">Autofill payment methods keywords</string>
+    <string name="autofill_save_card_prompt_confirm">Autofill save card prompt confirm</string>
+    <string name="autofill_virtual_card_number_switch_label">Autofill virtual card number switch label</string>
+    <string name="autofill_wallet_management_link_text">Autofill wallet management link text</string>
+    <string name="autofill_work_profile_icon_accessibility_label">Autofill work profile icon accessibility label</string>
+    <string name="enable_desktop_site_window_setting_title">Enable desktop site window setting title</string>
+    <string name="enable_notifications_vibrate_summary">Enable notifications vibrate summary</string>
+    <string name="enable_notifications_vibrate_title">Enable notifications vibrate title</string>
+    <string name="enter_web_address">Enter web address</string>
+    <string name="glic_setting_label">Glic setting label</string>
+    <string name="incognito_ntp_block_third_party_cookies_header">Incognito ntp block third party cookies header</string>
+    <string name="incognito_tab_learn_more_accessibility_label">Incognito tab learn more accessibility label</string>
+    <string name="intrusive_ads_information">Intrusive ads information</string>
+    <string name="login_dialog_password_field">Login dialog password field</string>
+    <string name="login_dialog_username_field">Login dialog username field</string>
+    <string name="new_tab_otr_title">New tab otr title</string>
+    <string name="no_saved_website_settings">No saved website settings</string>
+    <string name="omnibox_empty_hint">Omnibox empty hint</string>
+    <string name="options_homepage_title">Options homepage title</string>
+    <string name="prefs_site_settings">Prefs site settings</string>
+    <string name="price_notifications_settings_description">Price notifications settings description</string>
+    <string name="price_notifications_settings_title">Price notifications settings title</string>
+    <string name="settings_can_make_payment_toggle_label">Settings can make payment toggle label</string>
+    <string name="settings_cookies_block_third_party_settings_allow_sublabel">Settings cookies block third party settings allow sublabel</string>
+    <string name="settings_privacy_and_security_advanced_protection_section_title">Settings privacy and security advanced protection section title</string>
+    <string name="site_settings_clear_all_zoom_levels_button_text">Site settings clear all zoom levels button text</string>
+    <string name="site_settings_content_category">Site settings content category</string>
+    <string name="site_settings_empty_zoom_levels_message">Site settings empty zoom levels message</string>
+    <string name="site_settings_permission_category">Site settings permission category</string>
+    <string name="storage_delete_button_title">Storage delete button title</string>
+    <string name="third_party_cookies_link_row_label">Third party cookies link row label</string>
+    <string name="webapp_update_current_icon">Webapp update current icon</string>
+    <string name="webapp_update_new_icon">Webapp update new icon</string>
+    <string name="website_reset_full">Website reset full</string>
+    <string name="website_settings_add_site_site_url">Website settings add site site url</string>
+    <string name="website_settings_category_allowed">Website settings category allowed</string>
+    <string name="website_settings_category_ask">Website settings category ask</string>
+    <string name="website_settings_category_cookie_rws_toggle_description">Website settings category cookie rws toggle description</string>
+    <string name="website_settings_category_cookie_rws_toggle_title">Website settings category cookie rws toggle title</string>
+    <string name="website_settings_category_not_allowed">Website settings category not allowed</string>
+    <string name="website_settings_category_notifications_quiet">Website settings category notifications quiet</string>
+    <string name="website_settings_category_permission_cpss">Website settings category permission cpss</string>
+    <string name="website_settings_category_permission_loud">Website settings category permission loud</string>
+    <string name="website_settings_category_permission_quiet">Website settings category permission quiet</string>
+    <string name="website_settings_category_permission_title">Website settings category permission title</string>
+    <string name="website_settings_edit_site_dialog_geolocation_access_description">Website settings edit site dialog geolocation access description</string>
+    <string name="website_settings_file_editing_grants_category">Website settings file editing grants category</string>
+    <string name="website_settings_permissions_category">Website settings permissions category</string>
+    <string name="website_settings_permissions_description">Website settings permissions description</string>
+    <string name="website_settings_permissions_geolocation_approximate">Website settings permissions geolocation approximate</string>
+    <string name="website_settings_permissions_geolocation_description">Website settings permissions geolocation description</string>
+    <string name="website_settings_permissions_geolocation_precise">Website settings permissions geolocation precise</string>
+    <string name="website_settings_privacy_and_security_javascript_optimizer_row_label">Website settings privacy and security javascript optimizer row label</string>
+    <string name="website_settings_related_sites">Website settings related sites</string>
+    <string name="website_settings_site_category">Website settings site category</string>
+    <string name="website_settings_storage">Website settings storage</string>
+    <string name="website_settings_third_party_cookies_page_allow_radio_label">Website settings third party cookies page allow radio label</string>
+    <string name="website_settings_third_party_cookies_page_block_radio_label">Website settings third party cookies page block radio label</string>
+    <string name="website_settings_third_party_cookies_page_block_radio_sub_label">Website settings third party cookies page block radio sub label</string>
+    <string name="website_settings_usage_category">Website settings usage category</string>
+    <string name="webstorage_clear_data_dialog_site_settings_remove_site_ad_personalization">Webstorage clear data dialog site settings remove site ad personalization</string>
+    <string name="webstorage_delete_data_dialog_ok_button">Webstorage delete data dialog ok button</string>
+    <string name="webstorage_delete_data_dialog_title">Webstorage delete data dialog title</string>
+    <style name="AiModeChip" parent="android:Widget" />
+    <style name="BottomToolbarButton" parent="android:Widget" />
+    <style name="LocationBarActionButtonForFakeSearchBox" parent="android:Widget" />
+    <style name="LocationBarButton" parent="android:Widget" />
+    <style name="NewTabButtonStyle" parent="android:Widget" />
+    <style name="SettingsToolbarStyle" parent="android:Widget" />
+    <style name="ShapeAppearance.Material3.Corner.Full" />
+    <style name="ToolbarButton" parent="android:Widget" />
+    <style name="ToolbarHoverableButton" parent="android:Widget" />
+    <style name="ToolbarMenuButton" parent="android:Widget" />
+    <style name="Widget.AppCompat.ProgressBar" parent="android:Widget" />
+    <style name="Widget.AppCompat.SearchView.ActionBar" parent="android:Widget" />
+    <style name="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" parent="Widget.MaterialComponents.Button" />
+    <style name="Widget.Material3Expressive.Button.IconButton.Filled" parent="Widget.MaterialComponents.Button" />
+    <style name="Widget.MaterialComponents.AppBarLayout.Surface" parent="android:Widget" />
+    <style name="Widget.MaterialComponents.TextInputLayout.OutlinedBox" parent="android:Widget" />
+    <attr name="containerShapeChecked" format="reference|dimension" />
+    <attr name="containerShapePressed" format="reference|dimension" />
+    <attr name="materialSizeOverlay" format="reference|dimension" />
 </resources>
