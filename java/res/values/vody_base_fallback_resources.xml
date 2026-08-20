@@ -255,4 +255,10 @@
     <style name="Widget.MaterialComponents.Button" parent="android:Widget"/>
     <style name="Widget.MaterialComponents.Slider" parent="android:Widget"/>
     <style name="Widget.MaterialComponents.TabLayout" parent="android:Widget"/>
+    <style name="Theme.BrowserUI.Dark" parent="android:Theme.Material.NoActionBar"/>
+    <style name="Theme.BrowserUI.Dark.AlertDialog.NoActionBar" parent="android:Theme.Material.NoActionBar"/>
+    <style name="Theme.BrowserUI.Dark.DialogWhenLarge" parent="android:Theme.Material.NoActionBar"/>
+    <style name="Theme.BrowserUI.NoDisplay" parent="android:Theme.Material.NoActionBar"/>
+    <style name="ShapeAppearance.Material3" parent="android:Widget"/>
+    <style name="SizeOverlay.Material3Expressive.Button.IconButton" parent="android:Widget"/>
 </resources>
