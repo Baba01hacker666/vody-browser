@@ -44,7 +44,16 @@ android {
             res.srcDirs = [
                 '../java/res',
                 '../java/res_chromium_base',
-                '../java/res_template',
+                '../java/res_base',
+                '../ui/android/java/res',
+                '../components/browser_ui/styles/android/java/res',
+                '../components/browser_ui/theme/android/java/res',
+                '../components/browser_ui/widget/android/java/res',
+                '../components/browser_ui/settings/android/java/res',
+                '../components/browser_ui/bottomsheet/android/java/res',
+                '../components/browser_ui/modaldialog/android/java/res',
+                '../components/browser_ui/site_settings/android/java/res',
+                '../components/browser_ui/share/android/java/res',
                 '../features/tab_ui/java/res',
                 '../feed/core/java/res'
             ]

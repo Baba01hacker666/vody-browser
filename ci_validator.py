@@ -17,7 +17,6 @@ def main():
     errors = []
     warnings = []
 
-    # 1. Validate XML Syntax across all res directories (excluding template engines)
     all_xml = glob.glob('**/res*/**/*.xml', recursive=True)
     xml_files = [f for f in all_xml if 'res_template' not in f and 'jinja' not in f]
     print(f"[*] Scanning {len(xml_files)} XML resource files for syntax...")
@@ -27,7 +26,6 @@ def main():
         except Exception as e:
             errors.append(f"Invalid XML syntax in {f}: {e}")
 
-    # 2. Check for invalid non-resource files inside res folders
     print("[*] Checking for illegal files in res/ subfolders...")
     for root, dirs, files in os.walk('.'):
         if ('/res/' in root or root.endswith('/res')) and 'res_template' not in root:
@@ -35,13 +33,19 @@ def main():
                 if not any(f.endswith(ext) for ext in ['.xml', '.png', '.webp', '.jpg', '.gif', '.9.png', '.json', '.bin']):
                     errors.append(f"Non-resource file found in resource folder: {os.path.join(root, f)}")
 
-    # 3. Check for missing Color and Dimension references
-    print("[*] Verifying all @color and @dimen references...")
+    print("[*] Verifying all @color and @dimen references against definitions...")
     defined_resources = set()
     referenced_resources = set()
 
+    # 1. Color State List files (res/color/*.xml)
+    for f in glob.glob('**/res*/**/color*/*.xml', recursive=True):
+        if 'res_template' not in f:
+            name = os.path.splitext(os.path.basename(f))[0]
+            defined_resources.add('color/' + name)
+
+    # 2. Values in res/values/*.xml
     for f in xml_files:
-        if '/values' in f:
+        if '/values' in f and 'overlayable' not in f:
             try:
                 tree = ET.parse(f)
                 for c in tree.findall('.//color'):
@@ -75,7 +79,6 @@ def main():
     if missing:
         errors.append(f"Missing resource definitions ({len(missing)}): {sorted(list(missing))[:10]}...")
 
-    # Report Results
     print("--------------------------------------------------")
     if warnings:
         print(f"[!] {len(warnings)} Warning(s) found:")
