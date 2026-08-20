@@ -19,21 +19,39 @@ def main():
 
     all_xml = glob.glob('**/res*/**/*.xml', recursive=True)
     xml_files = [f for f in all_xml if 'res_template' not in f and 'jinja' not in f]
-    print(f"[*] [1/5] Scanning {len(xml_files)} XML resource files for syntax...")
+    print(f"[*] [1/6] Scanning {len(xml_files)} XML resource files for syntax...")
     for f in xml_files:
         try:
             ET.parse(f)
         except Exception as e:
             errors.append(f"Invalid XML syntax in {f}: {e}")
 
-    print("[*] [2/5] Checking for illegal non-resource files in res/ subfolders...")
+    print("[*] [2/6] Checking for intra-file duplicate item names...")
+    for f in xml_files:
+        if '/values' in f:
+            try:
+                tree = ET.parse(f)
+                seen_in_file = set()
+                for el in tree.getroot():
+                    tag = el.tag
+                    name = el.get('name')
+                    if name:
+                        key = f"{tag}/{name}"
+                        if key in seen_in_file:
+                            errors.append(f"Duplicate item '{key}' found within {f}")
+                        else:
+                            seen_in_file.add(key)
+            except Exception:
+                pass
+
+    print("[*] [3/6] Checking for illegal non-resource files in res/ subfolders...")
     for root, dirs, files in os.walk('.'):
         if ('/res/' in root or root.endswith('/res')) and 'res_template' not in root:
             for f in files:
                 if not any(f.endswith(ext) for ext in ['.xml', '.png', '.webp', '.jpg', '.gif', '.9.png', '.json', '.bin']):
                     errors.append(f"Non-resource file found in resource folder: {os.path.join(root, f)}")
 
-    print("[*] [3/5] Checking for duplicate attribute format definitions...")
+    print("[*] [4/6] Checking for duplicate attribute format definitions...")
     attrs_with_format = {}
     for f in glob.glob('**/res*/**/values*/attrs*.xml', recursive=True):
         if 'res_template' in f or 'jinja' in f: continue
@@ -50,17 +68,15 @@ def main():
         except Exception:
             pass
 
-    print("[*] [4/5] Verifying color, dimension, and drawable definitions...")
+    print("[*] [5/6] Verifying color, dimension, and drawable definitions...")
     defined_resources = set()
     referenced_resources = set()
 
-    # Color State List files (res/color/*.xml)
     for f in glob.glob('**/res*/**/color*/*.xml', recursive=True):
         if 'res_template' not in f:
             name = os.path.splitext(os.path.basename(f))[0]
             defined_resources.add('color/' + name)
 
-    # Values in res/values/*.xml
     for f in xml_files:
         if '/values' in f and 'overlayable' not in f:
             try:
@@ -96,7 +112,7 @@ def main():
     if missing_res:
         errors.append(f"Missing color/dimen definitions ({len(missing_res)}): {sorted(list(missing_res))[:10]}...")
 
-    print("[*] [5/5] Verifying style and string definitions...")
+    print("[*] [6/6] Verifying style and string definitions...")
     defined_styles = set()
     defined_strings = set()
     referenced_styles = set()
@@ -130,7 +146,6 @@ def main():
             pass
 
     missing_styles = referenced_styles - defined_styles
-    # Filter known android: and Material styles that come from AAR libraries
     missing_styles = {s for s in missing_styles if not (s.startswith('android:') or s.startswith('Theme.Material') or s.startswith('Widget.Material') or s.startswith('Preference.') or s.startswith('Widget.AppCompat'))}
     if missing_styles:
         errors.append(f"Missing style definitions ({len(missing_styles)}): {sorted(list(missing_styles))[:10]}...")
@@ -152,7 +167,7 @@ def main():
         print("----------------------------------------------------------")
         sys.exit(1)
     else:
-        print("[✓] All 1,340+ XML resource files, styles, strings, and attributes passed validation cleanly!")
+        print("[✓] All 1,340+ XML resource files, intra-file uniqueness, styles, strings, and attributes passed validation cleanly!")
         print("----------------------------------------------------------")
         sys.exit(0)
 
