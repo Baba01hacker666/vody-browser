@@ -1,13 +1,19 @@
 # Vody Browser
 
-A fast, lightweight, and independent Chromium-based Android browser.
+A fast, customizable, and independent Android browser built on Chromium with full on-device Extensions and Developer Tools support.
 
-## Architecture
+## Features
 
-Vody Browser is built on a standalone Chromium Android application architecture:
-- **Application & UI Layer**: Located in `java/`, `feed/`, `features/`, `modules/`, and `webapk/`.
-- **Tests**: Located in `junit/` and `javatests/`.
-- **Build Configurations**: GN/Ninja configurations (`BUILD.gn`, `.gni` files).
+- **Chrome Extension Support**:
+  - Full support for Manifest V2 & Manifest V3 extensions (`.crx`, `.zip`, and unpacked directories).
+  - Direct installation from the Chrome Web Store via extension ID or URL.
+  - Content script injection (CSS & JavaScript), popup rendering, and `chrome.*` API bridge (`chrome.runtime`, `chrome.storage`, `chrome.tabs`, `chrome.action`).
+  - Native Extensions Management UI (`ExtensionManagerActivity`).
+- **On-Device Developer Tools**:
+  - Interactive on-device DevTools Inspector (Elements, Console, Network, Resources, DOM tree).
+  - Built-in JavaScript evaluation console (`DevToolsConsoleDialog`).
+- **Rebranded Architecture**:
+  - Independent identity (**Vody**) separated from upstream naming.
 
 ## Upstream Synchronization
 

@@ -556,6 +556,12 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
         // Settings
         modelList.add(buildSettingsItem());
 
+        // Extensions
+        modelList.add(buildExtensionsItem());
+
+        // Developer Tools
+        modelList.add(buildDevToolsItem());
+
         // NTP Customizations
         if (mMoreToolsItemBuilder.shouldShowNtpCustomizations(currentTab)) {
             modelList.add(
@@ -1446,6 +1452,30 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
                         R.id.preferences_id,
                         R.string.menu_settings,
                         shouldShowIconBeforeItem() ? R.drawable.settings_cog : Resources.ID_NULL,
+                        isMenuIconAtStart()));
+    }
+
+    private ListItem buildExtensionsItem() {
+        return new ListItem(
+                AppMenuHandler.AppMenuItemType.STANDARD,
+                AppMenuItemUtils.buildModelForStandardMenuItem(
+                        mContext,
+                        getAppMenuItemTheme(),
+                        R.id.extensions_menu_id,
+                        R.string.extensions_menu_title,
+                        shouldShowIconBeforeItem() ? R.drawable.ic_webstore_menu : Resources.ID_NULL,
+                        isMenuIconAtStart()));
+    }
+
+    private ListItem buildDevToolsItem() {
+        return new ListItem(
+                AppMenuHandler.AppMenuItemType.STANDARD,
+                AppMenuItemUtils.buildModelForStandardMenuItem(
+                        mContext,
+                        getAppMenuItemTheme(),
+                        R.id.devtools_menu_id,
+                        R.string.menu_devtools,
+                        Resources.ID_NULL,
                         isMenuIconAtStart()));
     }
 

@@ -252,6 +252,8 @@ found in the LICENSE file.
     <item type="id" name="payment_methods_menu_id" />
     <item type="id" name="pin_tab_menu_id" />
     <item type="id" name="preferences_id" />
+    <item type="id" name="extensions_menu_id" />
+    <item type="id" name="devtools_menu_id" />
     <item type="id" name="qr_code_menu_id" />
     <item type="id" name="quick_delete_divider_line_id" />
     <item type="id" name="quick_delete_menu_id" />

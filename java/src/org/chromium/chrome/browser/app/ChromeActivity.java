@@ -2960,6 +2960,16 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             return true;
         }
 
+        if (id == R.id.extensions_menu_id) {
+            org.chromium.chrome.browser.extensions.ui.ExtensionManagerActivity.start(this);
+            return true;
+        }
+
+        if (id == R.id.devtools_menu_id) {
+            org.chromium.chrome.browser.devtools.VodyDevTools.openConsoleDialog(this, getActivityTab());
+            return true;
+        }
+
         if (id == R.id.update_menu_id) {
             UpdateMenuItemHelper.getInstance(
                             getProfileProviderSupplier().get().getOriginalProfile())

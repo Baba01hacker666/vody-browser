@@ -13,4 +13,7 @@ found in the LICENSE file.
     See http://www.chromium.org/developers/design-documents/ui-localization
 -->
 
-<resources/>
+<resources>
+    <string name="extensions_menu_title">Extensions</string>
+    <string name="menu_devtools">Developer Tools</string>
+</resources>
