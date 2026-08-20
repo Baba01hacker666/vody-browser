@@ -200,28 +200,10 @@
     <attr name="containerShapeChecked" format="reference|dimension"/>
     <attr name="containerShapePressed" format="reference|dimension"/>
     <attr name="materialSizeOverlay" format="reference|dimension"/>
-    <attr name="actionBarStyle" format="reference"/>
-    <attr name="actionBarTheme" format="reference"/>
-    <attr name="alertDialogTheme" format="reference"/>
-    <attr name="allowDividerAbove" format="boolean"/>
-    <attr name="allowDividerBelow" format="boolean"/>
-    <attr name="appBarLayoutStyle" format="reference"/>
-    <attr name="autoCompleteTextViewStyle" format="reference"/>
-    <attr name="background" format="reference|string"/>
-    <attr name="backgroundTint" format="reference|string"/>
-    <attr name="buttonBarButtonStyle" format="reference"/>
-    <attr name="buttonTint" format="reference|string"/>
-    <attr name="checkBoxPreferenceStyle" format="reference"/>
-    <attr name="checkboxStyle" format="reference"/>
-    <attr name="colorAccent" format="reference|color"/>
-    <attr name="colorControlActivated" format="reference|color"/>
-    <attr name="colorControlHighlight" format="reference|color"/>
     <attr name="colorOnPrimaryContainer" format="reference|color"/>
     <attr name="colorOnSecondaryContainer" format="reference|color"/>
     <attr name="colorOnSurfaceInverse" format="reference|color"/>
     <attr name="colorOnTertiaryContainer" format="reference|color"/>
-    <attr name="colorPrimaryDark" format="reference|color"/>
-    <attr name="colorPrimaryInverse" format="reference|color"/>
     <attr name="colorSurfaceDim" format="reference|color"/>
     <attr name="colorSurfaceInverse" format="reference|color"/>
     <attr name="colorTertiaryContainer" format="reference|color"/>
@@ -234,47 +216,6 @@
     <attr name="containerPaddingEnd" format="reference|dimension"/>
     <attr name="containerPaddingStart" format="reference|dimension"/>
     <attr name="containerPaddingTop" format="reference|dimension"/>
-    <attr name="cornerSize" format="reference|dimension"/>
-    <attr name="dialogPreferenceStyle" format="reference"/>
-    <attr name="dynamicColorThemeOverlay" format="reference|color"/>
-    <attr name="editTextStyle" format="reference"/>
-    <attr name="elevationOverlayAccentColor" format="reference|color"/>
-    <attr name="elevationOverlayColor" format="reference|color"/>
-    <attr name="elevationOverlayEnabled" format="boolean"/>
-    <attr name="errorTextAppearance" format="reference"/>
-    <attr name="hintTextAppearance" format="reference"/>
-    <attr name="iconSpaceReserved" format="boolean"/>
-    <attr name="materialSwitchStyle" format="reference"/>
-    <attr name="materialThemeOverlay" format="reference"/>
-    <attr name="preferenceFragmentCompatStyle" format="reference"/>
-    <attr name="preferenceFragmentListStyle" format="reference"/>
-    <attr name="preferenceStyle" format="reference"/>
-    <attr name="preferenceTheme" format="reference"/>
-    <attr name="radioButtonStyle" format="reference"/>
-    <attr name="searchViewStyle" format="reference"/>
-    <attr name="shapeAppearance" format="reference"/>
-    <attr name="spinnerStyle" format="reference"/>
-    <attr name="switchPreferenceCompatStyle" format="reference"/>
-    <attr name="tabGravity" format="reference|string"/>
-    <attr name="tabIndicator" format="reference|string"/>
-    <attr name="tabIndicatorColor" format="reference|color"/>
-    <attr name="tabIndicatorFullWidth" format="reference|dimension"/>
-    <attr name="tabIndicatorHeight" format="reference|dimension"/>
-    <attr name="tabMaxWidth" format="reference|dimension"/>
-    <attr name="tabMode" format="reference|string"/>
-    <attr name="tabSelectedTextColor" format="reference|color"/>
-    <attr name="tabTextAppearance" format="reference"/>
-    <attr name="tabTextColor" format="reference|color"/>
-    <attr name="textAppearanceLabelLarge" format="reference"/>
-    <attr name="textInputStyle" format="reference"/>
-    <attr name="titleTextAppearance" format="reference"/>
-    <attr name="titleTextColor" format="reference|color"/>
-    <attr name="titleTextStyle" format="reference"/>
-    <attr name="toolbarStyle" format="reference"/>
-    <attr name="trackHeight" format="reference|dimension"/>
-    <attr name="windowActionBar" format="boolean"/>
-    <attr name="windowActionBarOverlay" format="boolean"/>
-    <attr name="windowNoTitle" format="boolean"/>
     <style name="Preference.CheckBoxPreference.Material" parent="android:Widget"/>
     <style name="Preference.Material" parent="android:Widget"/>
     <style name="Preference.SwitchPreferenceCompat.Material" parent="android:Widget"/>
@@ -314,5 +255,4 @@
     <style name="Widget.MaterialComponents.Button" parent="android:Widget"/>
     <style name="Widget.MaterialComponents.Slider" parent="android:Widget"/>
     <style name="Widget.MaterialComponents.TabLayout" parent="android:Widget"/>
-    <style name="Theme.BrowserUI.NoDisplay" parent="android:Theme.Material.NoActionBar"/>
 </resources>
