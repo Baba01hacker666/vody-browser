@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_new_tab" android:title="@string/new_tab" app:showAsAction="never" />
+    <item android:id="@+id/action_bookmarks" android:title="@string/menu_bookmarks" app:showAsAction="never" />
+    <item android:id="@+id/action_history" android:title="@string/menu_history" app:showAsAction="never" />
+    <item android:id="@+id/action_devtools" android:title="@string/menu_devtools" app:showAsAction="never" />
+    <item android:id="@+id/action_extensions" android:title="@string/menu_extensions" app:showAsAction="never" />
+    <item android:id="@+id/action_share" android:title="@string/menu_share" app:showAsAction="never" />
+    <item android:id="@+id/action_settings" android:title="@string/menu_settings" app:showAsAction="never" />
+</menu>

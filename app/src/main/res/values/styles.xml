@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="VodyTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/vody_primary</item>
+        <item name="colorPrimaryVariant">@color/vody_primary_dark</item>
+        <item name="colorAccent">@color/vody_accent</item>
+        <item name="android:statusBarColor">@color/vody_primary</item>
+        <item name="android:windowBackground">@color/vody_bg</item>
+    </style>
+</resources>

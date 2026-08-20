@@ -1,0 +1,12 @@
+{
+  "manifest_version": 2,
+  "name": "Vody DevTools Eval",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["eval.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

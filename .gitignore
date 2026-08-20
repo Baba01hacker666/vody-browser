@@ -12,6 +12,12 @@ bin/
 gen/
 out/
 
+# Secrets — never commit
+.env
+
+# Local SDK path (generated locally / by CI)
+local.properties
+
 # IDE and Editor files
 .idea/
 *.iml

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="homepage"
+        android:title="@string/settings_homepage"
+        android:defaultValue="https://www.google.com"
+        android:summary="https://www.google.com" />
+
+    <SwitchPreferenceCompat
+        android:key="javascript"
+        android:title="@string/settings_javascript"
+        android:defaultValue="true" />
+
+    <Preference
+        android:key="clear_data"
+        android:title="@string/settings_clear_data" />
+
+    <Preference
+        android:key="about"
+        android:title="@string/settings_about"
+        android:summary="@string/about_text" />
+</PreferenceScreen>

@@ -1,4 +1,4 @@
-name: Build Vody Browser APK & CI
+name: Build Vody Browser (GeckoView)
 
 on:
   push:
@@ -15,10 +15,10 @@ jobs:
   build:
     name: Build Vody Android APK
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
-      - name: Checkout Vody Browser Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -30,68 +30,35 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Cache Android SDK Components
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.android/cache
-            /usr/local/lib/android/sdk/platforms
-            /usr/local/lib/android/sdk/build-tools
-          key: ${{ runner.os }}-android-sdk-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-android-sdk-
+      - name: Install SDK packages (compileSdk 35 + build-tools 35.0.0)
+        run: |
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set SDK dir
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       - name: Setup Gradle Cache
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
 
-      - name: Grant Execute Permissions for Scripts
-        run: |
-          chmod +x gradlew
-          chmod +x download_prebuilt_engine.sh
-          chmod +x ci_validator.py
+      - name: Grant execute permission
+        run: chmod +x gradlew
 
-      - name: Run CI Pre-Flight One-Shot Reviewer
-        run: |
-          python3 ci_validator.py
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest --no-daemon
 
-      - name: Cache Prebuilt Chromium Native Engine
-        id: cache-engine
-        uses: actions/cache@v4
-        with:
-          path: |
-            app/src/main/jniLibs
-            app/src/main/assets
-          key: ${{ runner.os }}-chromium-engine-arm64
+      - name: Build arm64 debug APK (GeckoView engine)
+        run: ./gradlew assembleDebug --no-daemon
 
-      - name: Download Prebuilt Chromium Engine (.so and pak files)
-        if: steps.cache-engine.outputs.cache-hit != 'true'
-        run: |
-          echo "Downloading and setting up native Chromium engine..."
-          ./download_prebuilt_engine.sh
+      - name: List generated APK
+        run: find . -name "*.apk" -type f -exec ls -lh {} +
 
-      - name: Run Unit Tests
-        run: |
-          echo "Running Vody Browser Unit Tests..."
-          ./gradlew testDebugUnitTest --stacktrace --info || true
-
-      - name: Build Debug APK
-        run: |
-          echo "Assembling Vody Browser APK with native engine..."
-          ./gradlew assembleDebug --stacktrace --info
-
-      - name: Find and List Generated APKs
-        run: |
-          echo "Listing compiled APKs:"
-          find . -name "*.apk" -type f -exec ls -lh {} +
-
-      - name: Upload Vody Browser APK Artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: vody-browser-debug-apk
-          path: |
-            app/build/outputs/apk/debug/*.apk
-            **/*.apk
+          path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
           if-no-files-found: error

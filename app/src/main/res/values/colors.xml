@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="vody_primary">#1565C0</color>
+    <color name="vody_primary_dark">#0D47A1</color>
+    <color name="vody_accent">#FF6F00</color>
+    <color name="vody_bg">#FFFFFF</color>
+    <color name="vody_surface">#F2F4F7</color>
+    <color name="vody_text">#1A1A1A</color>
+</resources>
