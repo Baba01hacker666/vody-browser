@@ -46,8 +46,25 @@ jobs:
         with:
           cache-read-only: false
 
-      - name: Grant Execute Permissions for Gradlew
-        run: chmod +x gradlew
+      - name: Grant Execute Permissions for Scripts
+        run: |
+          chmod +x gradlew
+          chmod +x download_prebuilt_engine.sh
+
+      - name: Cache Prebuilt Chromium Native Engine
+        id: cache-engine
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/src/main/jniLibs
+            app/src/main/assets
+          key: ${{ runner.os }}-chromium-engine-arm64
+
+      - name: Download Prebuilt Chromium Engine (.so and pak files)
+        if: steps.cache-engine.outputs.cache-hit != 'true'
+        run: |
+          echo "Downloading and setting up native Chromium engine..."
+          ./download_prebuilt_engine.sh
 
       - name: Run Unit Tests
         run: |
@@ -56,7 +73,7 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          echo "Assembling Vody Browser APK with full stacktrace and info logging..."
+          echo "Assembling Vody Browser APK with native engine..."
           ./gradlew assembleDebug --stacktrace --info
 
       - name: Find and List Generated APKs
