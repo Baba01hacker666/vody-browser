@@ -1,0 +1,25 @@
+# Build and temporary files
+*.pyc
+__pycache__/
+*.class
+*.jar
+*.ap_
+*.apk
+*.dex
+.gradle/
+build/
+bin/
+gen/
+out/
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Sync temporary files
+*.tar.gz
+.sync_temp/
