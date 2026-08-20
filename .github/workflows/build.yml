@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GRADLE_VERSION: "8.9"
+
 jobs:
   build:
     name: Build Vody Android APK
@@ -35,16 +38,23 @@ jobs:
           sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set SDK dir
+        run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+      # The gradle-wrapper.jar is NOT committed (binary in git is bad practice).
+      # CI downloads the matching Gradle distribution and regenerates the wrapper
+      # jar from it, so ./gradlew works without tracking a .jar in the repo.
+      - name: Download Gradle and regenerate wrapper
         run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          curl -sSL -o gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
+          unzip -q gradle.zip
+          ./gradle-${GRADLE_VERSION}/bin/gradle wrapper --gradle-version "${GRADLE_VERSION}"
+          chmod +x gradlew
+          rm -rf gradle-${GRADLE_VERSION} gradle.zip
 
       - name: Setup Gradle Cache
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
-
-      - name: Grant execute permission
-        run: chmod +x gradlew
 
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest --no-daemon
