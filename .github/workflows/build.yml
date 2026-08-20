@@ -52,16 +52,12 @@ jobs:
       - name: Run Unit Tests
         run: |
           echo "Running Vody Browser Unit Tests..."
-          ./gradlew testDebugUnitTest --continue || true
+          ./gradlew testDebugUnitTest --stacktrace --info || true
 
       - name: Build Debug APK
         run: |
-          echo "Assembling Vody Browser APK..."
-          ./gradlew assembleDebug || {
-            echo "Packaging standalone Vody APK bundle..."
-            mkdir -p app/build/outputs/apk/debug
-            zip -r app/build/outputs/apk/debug/vody-browser-debug-1.0.0.apk app/src/ java/ -x "*.git*"
-          }
+          echo "Assembling Vody Browser APK with full stacktrace and info logging..."
+          ./gradlew assembleDebug --stacktrace --info
 
       - name: Find and List Generated APKs
         run: |
