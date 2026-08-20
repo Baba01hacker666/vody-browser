@@ -22,9 +22,11 @@
     <string name="menu_bookmarks">Bookmarks</string>
     <string name="menu_history">History</string>
     <string name="menu_devtools">DevTools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_reload">Reload</string>
+    <string name="menu_open">Menu</string>
+    <string name="menu_back">Back</string>
     <string name="menu_forward">Forward</string>
+    <string name="menu_reload">Reload</string>
+    <string name="menu_share">Share</string>
     <string name="home_url">https://www.google.com</string>
     <string name="ext_install">Install extension</string>
     <string name="ext_enabled">Enabled</string>

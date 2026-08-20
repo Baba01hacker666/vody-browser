@@ -25,6 +25,7 @@ public class BrowseStore {
     private final File mBookmarks;
     private final File mHistory;
     private final File mExtensions;
+    private final File mPrivacy;
 
     public BrowseStore(Context ctx) {
         mDir = new File(ctx.getFilesDir(), "vody");
@@ -32,6 +33,7 @@ public class BrowseStore {
         mBookmarks = new File(mDir, "bookmarks.json");
         mHistory = new File(mDir, "history.json");
         mExtensions = new File(mDir, "extensions.json");
+        mPrivacy = new File(mDir, "privacy.json");
     }
 
     // ---- bookmarks --------------------------------------------------------
@@ -110,6 +112,23 @@ public class BrowseStore {
         writeList(mExtensions, list);
     }
 
+    // ---- privacy config --------------------------------------------------
+    public synchronized PrivacyConfig getPrivacy() {
+        if (!mPrivacy.exists()) return new PrivacyConfig();
+        try {
+            String s = new String(Files.readAllBytes(mPrivacy.toPath()), StandardCharsets.UTF_8);
+            if (s.isEmpty()) return new PrivacyConfig();
+            return PrivacyConfig.load(new JSONObject(s));
+        } catch (IOException | JSONException e) {
+            Log.w(TAG, "read privacy failed", e);
+            return new PrivacyConfig();
+        }
+    }
+
+    public synchronized void setPrivacy(PrivacyConfig c) {
+        writeJson(mPrivacy, c.toJson());
+    }
+
     // ---- generic json helpers --------------------------------------------
     private interface FromJson<T> {
         T apply(JSONObject o) throws JSONException;
@@ -155,6 +174,14 @@ public class BrowseStore {
     private void writeJson(File f, JSONArray arr) {
         try {
             Files.write(f.toPath(), arr.toString().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            Log.w(TAG, "write failed " + f.getName(), e);
+        }
+    }
+
+    private void writeJson(File f, JSONObject obj) {
+        try {
+            Files.write(f.toPath(), obj.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             Log.w(TAG, "write failed " + f.getName(), e);
         }

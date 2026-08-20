@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.mozilla.geckoview.GeckoSession;
@@ -56,6 +57,29 @@ public class MainActivity extends AppCompatActivity {
         mUrlBar.setOnEditorActionListener((v, actionId, event) -> {
             navigate(mUrlBar.getText().toString());
             return true;
+        });
+
+        // Bottom navigation bar: back / forward / reload / new tab / menu.
+        BottomNavigationView nav = findViewById(R.id.bottom_nav);
+        nav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_back) {
+                if (mCanGoBack && currentSession() != null) currentSession().goBack();
+                return true;
+            } else if (id == R.id.nav_forward) {
+                if (currentSession() != null) currentSession().goForward();
+                return true;
+            } else if (id == R.id.nav_reload) {
+                if (currentSession() != null) currentSession().reload();
+                return true;
+            } else if (id == R.id.nav_tabs) {
+                newTab();
+                return true;
+            } else if (id == R.id.nav_menu) {
+                openMenuSheet();
+                return true;
+            }
+            return false;
         });
 
         // Deep-link / VIEW intent: open the supplied URL in a new tab.
@@ -195,6 +219,31 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openMenuSheet() {
+        CharSequence[] items = new CharSequence[]{
+                getString(R.string.menu_bookmarks),
+                getString(R.string.menu_history),
+                getString(R.string.menu_devtools),
+                getString(R.string.menu_extensions),
+                getString(R.string.menu_share),
+                getString(R.string.menu_settings)
+        };
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.menu_open)
+                .setItems(items, (d, which) -> {
+                    switch (which) {
+                        case 0: showBookmarks(); break;
+                        case 1: showHistory(); break;
+                        case 2: DevToolsConsoleDialog.show(this, currentSession()); break;
+                        case 3: startActivity(new Intent(this, org.vody.browser.extensions.ExtensionManagerActivity.class)); break;
+                        case 4: shareCurrent(); break;
+                        case 5: startActivity(new Intent(this, org.vody.browser.settings.SettingsActivity.class)); break;
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private GeckoSession currentSession() {

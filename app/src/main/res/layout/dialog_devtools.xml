@@ -3,14 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:background="?android:colorBackground">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/devtools_title"
         android:textStyle="bold"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnBackground" />
 
     <EditText
         android:id="@+id/devtools_input"
@@ -18,7 +20,9 @@
         android:layout_height="wrap_content"
         android:hint="@string/devtools_hint"
         android:inputType="textMultiLine"
-        android:minLines="2" />
+        android:minLines="2"
+        android:textColor="?attr/colorOnBackground"
+        android:textColorHint="?attr/colorOnBackground" />
 
     <Button
         android:id="@+id/devtools_eval"
@@ -36,6 +40,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
             android:textSize="12sp"
-            android:paddingTop="8dp" />
+            android:paddingTop="8dp"
+            android:textColor="?attr/colorOnBackground" />
     </ScrollView>
 </LinearLayout>
