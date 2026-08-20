@@ -99,7 +99,7 @@ found in the LICENSE file.
         <attr name="iconWidth" format="reference|dimension"/>
         <attr name="iconHeight" format="reference|dimension"/>
         <attr name="useRoundedIcon" format="boolean"/>
-        <attr name="primaryTextAppearance" format="reference"/>
+        <attr name="primaryTextAppearance"/>
         <attr name="primaryTextStartPadding" format="reference|dimension"/>
         <attr name="endIconWidth" format="reference|dimension"/>
         <attr name="endIconHeight" format="reference|dimension"/>
@@ -113,11 +113,11 @@ found in the LICENSE file.
         <attr name="horizontalInset"/>
         <attr name="android:text"/>
         <attr name="icon" format="reference"/>
-        <attr name="iconTint" format="color"/>
+        <attr name="iconTint"/>
     </declare-styleable>
 
     <declare-styleable name="MaterialCardViewNoShadow">
-        <attr name="cornerRadius" format="dimension"/>
+        <attr name="cornerRadius"/>
         <attr name="cardBackgroundColor" format="color"/>
     </declare-styleable>
 

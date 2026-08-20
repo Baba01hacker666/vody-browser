@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Vody Browser CI Pre-flight Validator & Code Reviewer
-Validates manifests, resources, XML syntax, and duplicate IDs in one shot.
+Validates manifests, resources, XML syntax, duplicate attrs, and resource integrity in one shot.
 """
 import os
 import glob
@@ -33,17 +33,32 @@ def main():
                 if not any(f.endswith(ext) for ext in ['.xml', '.png', '.webp', '.jpg', '.gif', '.9.png', '.json', '.bin']):
                     errors.append(f"Non-resource file found in resource folder: {os.path.join(root, f)}")
 
+    print("[*] Checking for duplicate attribute format definitions...")
+    attrs_with_format = {}
+    for f in glob.glob('**/res*/**/values*/attrs*.xml', recursive=True):
+        if 'res_template' in f or 'jinja' in f: continue
+        try:
+            tree = ET.parse(f)
+            for attr in tree.findall('.//attr'):
+                name = attr.get('name')
+                fmt = attr.get('format')
+                if name and fmt:
+                    if name in attrs_with_format:
+                        errors.append(f"Duplicate format for attr '{name}' in {f} (already defined in {attrs_with_format[name]})")
+                    else:
+                        attrs_with_format[name] = f
+        except Exception:
+            pass
+
     print("[*] Verifying all @color and @dimen references against definitions...")
     defined_resources = set()
     referenced_resources = set()
 
-    # 1. Color State List files (res/color/*.xml)
     for f in glob.glob('**/res*/**/color*/*.xml', recursive=True):
         if 'res_template' not in f:
             name = os.path.splitext(os.path.basename(f))[0]
             defined_resources.add('color/' + name)
 
-    # 2. Values in res/values/*.xml
     for f in xml_files:
         if '/values' in f and 'overlayable' not in f:
             try:
@@ -92,7 +107,7 @@ def main():
         print("--------------------------------------------------")
         sys.exit(1)
     else:
-        print("[✓] All manifests, XML files, and resource links passed validation cleanly!")
+        print("[✓] All manifests, XML files, attribute definitions, and resource links passed validation cleanly!")
         print("--------------------------------------------------")
         sys.exit(0)
 
