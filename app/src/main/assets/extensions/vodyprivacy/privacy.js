@@ -130,6 +130,11 @@
     try { apply(JSON.parse(e.detail)); } catch (err) {}
   });
 
-  // Ask the app for the current config as soon as we load.
-  try { browser.runtime.sendMessage({ type: "vody-privacy-request" }); } catch (e) {}
+  // Ask the app for the current config as soon as we load; the app answers via the
+  // MessageDelegate return value (browser.runtime.sendMessage resolves with it).
+  try {
+    browser.runtime.sendMessage({ type: "vody-privacy-request" }).then(function (cfg) {
+      if (cfg) { try { apply(JSON.parse(cfg)); } catch (e) {} }
+    }).catch(function () {});
+  } catch (e) {}
 })();

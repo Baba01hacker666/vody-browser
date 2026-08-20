@@ -27,12 +27,15 @@ public class VodyApplication extends Application {
     private GeckoRuntime mRuntime;
     private BrowseStore mStore;
     private WebExtension mEvalExtension;
+    private WebExtension mPrivacyExtension;
+    private PrivacyConfig mPrivacyConfig = new PrivacyConfig();
     private final List<EvalListener> mEvalListeners = new ArrayList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
         mStore = new BrowseStore(this);
+        mPrivacyConfig = mStore.getPrivacy();
     }
 
     /** Returns the process-wide GeckoRuntime, creating it on first use. */
@@ -52,6 +55,8 @@ public class VodyApplication extends Application {
             GeckoRuntime runtime = GeckoRuntime.create(this, settings);
             // Register the built-in DevTools eval extension (no-op if it fails).
             registerEvalExtension(runtime);
+            // Register the built-in privacy/spoof extension (answers vody-privacy-request).
+            registerPrivacyExtension(runtime);
             mRuntime = runtime;
         }
         return mRuntime;
@@ -83,6 +88,57 @@ public class VodyApplication extends Application {
         } catch (Exception e) {
             Log.w(TAG, "eval extension install failed", e);
         }
+    }
+
+    private void registerPrivacyExtension(GeckoRuntime runtime) {
+        try {
+            runtime.getWebExtensionController()
+                    .installBuiltIn("resource://android/assets/extensions/vodyprivacy/")
+                    .accept(ext -> {
+                        mPrivacyExtension = ext;
+                        ext.setMessageDelegate(new WebExtension.MessageDelegate() {
+                            @Override
+                            public GeckoResult<Object> onMessage(String nativeApp, Object message,
+                                                  WebExtension.MessageSender sender) {
+                                if (message instanceof java.util.Map) {
+                                    Object type = ((java.util.Map<?, ?>) message).get("type");
+                                    if ("vody-privacy-request".equals(type)) {
+                                        // Send the current config back to the content script.
+                                        return GeckoResult.fromValue(mPrivacyConfig.toJson().toString());
+                                    }
+                                }
+                                return GeckoResult.fromValue(null);
+                            }
+                        }, "vodyprivacy");
+                        Log.i(TAG, "Privacy extension registered");
+                    })
+                    .exceptionally(th -> {
+                        Log.w(TAG, "privacy extension registration failed", th);
+                        return null;
+                    });
+        } catch (Exception e) {
+            Log.w(TAG, "privacy extension install failed", e);
+        }
+    }
+
+    /** Pushes the (user-edited) privacy config to every loaded page via the privacy extension. */
+    public void applyPrivacyConfig(PrivacyConfig cfg) {
+        mPrivacyConfig = cfg;
+        if (mActiveSession != null) {
+            pushPrivacyConfig();
+        }
+    }
+
+    private void pushPrivacyConfig() {
+        if (mPrivacyExtension == null || mActiveSession == null) return;
+        String json = mPrivacyConfig.toJson().toString();
+        String safe = json.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n");
+        mActiveSession.loadUri("javascript:window.dispatchEvent(new CustomEvent('vody-privacy',{detail:'"
+                + safe + "'}))");
+    }
+
+    public PrivacyConfig getPrivacyConfig() {
+        return mPrivacyConfig;
     }
 
     /** Routes an eval result from the extension to the open DevTools dialog(s). */

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="?android:colorBackground">
 
-    <!-- Top app bar: logo, address bar, go -->
+    <!-- Top app bar: logo, address bar, bookmark, go -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -41,6 +41,14 @@
                 android:importantForAutofill="no" />
 
             <ImageButton
+                android:id="@+id/bookmark_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bookmark"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/add_bookmark" />
+
+            <ImageButton
                 android:id="@+id/go_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,6 +57,15 @@
                 android:contentDescription="@string/go" />
         </LinearLayout>
     </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- Page load progress -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="@color/white"
+        android:visibility="gone" />
 
     <!-- Page content -->
     <org.mozilla.geckoview.GeckoView

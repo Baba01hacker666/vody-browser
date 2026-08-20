@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private final List<Tab> mTabs = new ArrayList<>();
     private int mActive = -1;
     private boolean mCanGoBack = false;
+    private boolean mCanGoForward = false;
+    private com.google.android.material.progressindicator.LinearProgressIndicator mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
             navigate(mUrlBar.getText().toString());
             return true;
         });
+
+        ImageButton bookmarkBtn = findViewById(R.id.bookmark_btn);
+        bookmarkBtn.setOnClickListener(v -> toggleBookmark());
+
+        final com.google.android.material.progressindicator.LinearProgressIndicator progress =
+                findViewById(R.id.progress);
+        mProgress = progress;
 
         // Bottom navigation bar: back / forward / reload / new tab / menu.
         BottomNavigationView nav = findViewById(R.id.bottom_nav);
@@ -109,12 +118,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageStart(GeckoSession session, String url) {
                 tab.setUrl(url);
-                if (isActive(tab)) runOnUiThread(() -> mUrlBar.setText(url));
+                if (isActive(tab)) runOnUiThread(() -> {
+                    mUrlBar.setText(url);
+                    if (mProgress != null) mProgress.setVisibility(View.VISIBLE);
+                });
             }
 
             @Override
             public void onPageStop(GeckoSession session, boolean success) {
                 mApp.getStore().addHistory(tab.getTitle(), tab.getUrl());
+                if (isActive(tab) && mProgress != null) mProgress.setVisibility(View.GONE);
             }
         });
         s.setNavigationDelegate(new GeckoSession.NavigationDelegate() {
@@ -129,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCanGoBack(GeckoSession session, boolean canGoBack) {
                 mCanGoBack = canGoBack;
+                runOnUiThread(() -> updateNavState(session));
+            }
+
+            @Override
+            public void onCanGoForward(GeckoSession session, boolean canGoForward) {
+                mCanGoForward = canGoForward;
+                runOnUiThread(() -> updateNavState(session));
             }
         });
         s.setContentDelegate(new GeckoSession.ContentDelegate() {
@@ -248,6 +268,32 @@ public class MainActivity extends AppCompatActivity {
 
     private GeckoSession currentSession() {
         return (mActive >= 0 && mActive < mTabs.size()) ? mTabs.get(mActive).getSession() : null;
+    }
+
+    /** Enables / disables back + forward nav items based on real navigation state. */
+    private void updateNavState(GeckoSession session) {
+        BottomNavigationView nav = findViewById(R.id.bottom_nav);
+        if (nav == null) return;
+        Menu menu = nav.getMenu();
+        MenuItem back = menu.findItem(R.id.nav_back);
+        MenuItem fwd = menu.findItem(R.id.nav_forward);
+        if (back != null) back.setEnabled(mCanGoBack);
+        if (fwd != null) fwd.setEnabled(mCanGoForward);
+    }
+
+    private void toggleBookmark() {
+        Tab t = (mActive >= 0) ? mTabs.get(mActive) : null;
+        if (t == null) return;
+        BrowseStore store = mApp.getStore();
+        String url = t.getUrl();
+        String title = t.getTitle();
+        if (store.isBookmarked(url)) {
+            store.removeBookmark(url);
+            Toast.makeText(this, R.string.bookmark_removed, Toast.LENGTH_SHORT).show();
+        } else {
+            store.addBookmark(new Bookmark(title, url));
+            Toast.makeText(this, R.string.bookmark_added, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void shareCurrent() {

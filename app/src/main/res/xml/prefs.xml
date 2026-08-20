@@ -1,22 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="homepage"
-        android:title="@string/settings_homepage"
-        android:defaultValue="https://www.google.com"
-        android:summary="https://www.google.com" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreferenceCompat
-        android:key="javascript"
-        android:title="@string/settings_javascript"
-        android:defaultValue="true" />
+    <PreferenceCategory android:title="@string/settings_cat_general">
+        <EditTextPreference
+            android:key="homepage"
+            android:title="@string/settings_homepage"
+            android:defaultValue="https://www.google.com"
+            android:summary="https://www.google.com" />
 
-    <Preference
-        android:key="clear_data"
-        android:title="@string/settings_clear_data" />
+        <SwitchPreferenceCompat
+            android:key="javascript"
+            android:title="@string/settings_javascript"
+            android:defaultValue="true" />
+    </PreferenceCategory>
 
-    <Preference
-        android:key="about"
-        android:title="@string/settings_about"
-        android:summary="@string/about_text" />
+    <PreferenceCategory android:title="@string/settings_cat_privacy"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            android:key="privacy_rfp"
+            android:title="@string/privacy_resist"
+            android:summary="@string/privacy_resist_sum"
+            android:defaultValue="false" />
+
+        <SwitchPreferenceCompat
+            android:key="privacy_webgl"
+            android:title="@string/privacy_webgl"
+            android:summary="@string/privacy_webgl_sum"
+            android:defaultValue="false" />
+
+        <SwitchPreferenceCompat
+            android:key="privacy_timezone"
+            android:title="@string/privacy_timezone"
+            android:summary="@string/privacy_timezone_sum"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="privacy_timezone_value"
+            android:title="@string/privacy_timezone_value"
+            android:defaultValue="America/New_York"
+            android:summary="America/New_York"
+            android:dependency="privacy_timezone" />
+
+        <SwitchPreferenceCompat
+            android:key="privacy_fonts"
+            android:title="@string/privacy_fonts"
+            android:summary="@string/privacy_fonts_sum"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="privacy_fonts_value"
+            android:title="@string/privacy_fonts_value"
+            android:defaultValue="sans-serif"
+            android:summary="sans-serif"
+            android:dependency="privacy_fonts" />
+
+        <SwitchPreferenceCompat
+            android:key="privacy_username"
+            android:title="@string/privacy_username"
+            android:summary="@string/privacy_username_sum"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="privacy_username_value"
+            android:title="@string/privacy_username_value"
+            android:defaultValue="anonymous"
+            android:summary="anonymous"
+            android:dependency="privacy_username" />
+
+        <SwitchPreferenceCompat
+            android:key="privacy_apis"
+            android:title="@string/privacy_apis"
+            android:summary="@string/privacy_apis_sum"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="privacy_apis_value"
+            android:title="@string/privacy_apis_value"
+            android:defaultValue="{}"
+            android:summary="@string/privacy_apis_value_sum"
+            android:dependency="privacy_apis" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_cat_data">
+        <Preference
+            android:key="clear_data"
+            android:title="@string/settings_clear_data" />
+
+        <Preference
+            android:key="about"
+            android:title="@string/settings_about"
+            android:summary="@string/about_text" />
+    </PreferenceCategory>
 </PreferenceScreen>
