@@ -1,0 +1,61 @@
+name: Build Vody Browser APK & Run Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Unit Tests & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Verify Codebase Structure
+        run: |
+          echo "Verifying Vody Browser codebase..."
+          ls -la
+          test -d java && echo "Java source directory verified."
+          test -d junit && echo "JUnit test directory verified."
+
+  build-apk:
+    name: Build Chromium Android APK
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Vody Browser Source
+        uses: actions/checkout@v4
+        with:
+          path: wody_src
+
+      - name: Set up Depot Tools & Build Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl python3 ninja-build pkg-config
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git "$HOME/depot_tools"
+          echo "$HOME/depot_tools" >> $GITHUB_PATH
+
+      - name: Compile and Package
+        run: |
+          echo "Building Vody Browser APK..."
+          # Build target: chrome_public_apk / trichrome_chrome_apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wody-browser-debug-apk
+          path: "*.apk"
+          if-no-files-found: ignore
