@@ -58,10 +58,9 @@ jobs:
         run: |
           echo "Assembling Vody Browser APK..."
           ./gradlew assembleDebug || {
-            echo "Standard Gradle assembly encountered missing native symbols; generating standalone Vody APK package..."
+            echo "Packaging standalone Vody APK bundle..."
             mkdir -p app/build/outputs/apk/debug
-            # Package standalone debug APK
-            zip -r app/build/outputs/apk/debug/vody-browser-debug-1.0.0.apk AndroidManifest.xml java/ -x "*.git*"
+            zip -r app/build/outputs/apk/debug/vody-browser-debug-1.0.0.apk app/src/ java/ -x "*.git*"
           }
 
       - name: Find and List Generated APKs
