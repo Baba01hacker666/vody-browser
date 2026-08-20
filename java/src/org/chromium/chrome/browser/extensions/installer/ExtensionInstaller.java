@@ -49,7 +49,7 @@ public class ExtensionInstaller {
                 if (finalDir.exists()) {
                     deleteRecursively(finalDir);
                 }
-                tempDir.renameTo(finalDir);
+                moveDirectory(tempDir, finalDir);
 
                 Extension installedExt = ExtensionManifestParser.parseManifest(finalDir, extension.getId());
                 ExtensionManager.getInstance(context).registerInstalledExtension(installedExt);
@@ -128,11 +128,44 @@ public class ExtensionInstaller {
 
     public static String extractExtensionId(String input) {
         if (input == null) return null;
-        Matcher matcher = CWS_ID_PATTERN.matcher(input.toLowerCase());
-        if (matcher.find()) {
-            return matcher.group(1);
+        input = input.trim();
+        if (input.matches("^[a-zA-Z]{32}$")) {
+            return input.toLowerCase();
         }
-        return null;
+        Matcher matcher = CWS_ID_PATTERN.matcher(input.toLowerCase());
+        String lastMatch = null;
+        while (matcher.find()) {
+            lastMatch = matcher.group(1);
+        }
+        return lastMatch;
+    }
+
+    public static void moveDirectory(File src, File dest) throws Exception {
+        if (src.renameTo(dest)) return;
+
+        if (!dest.exists()) {
+            dest.mkdirs();
+        }
+        File[] files = src.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                File target = new File(dest, file.getName());
+                if (file.isDirectory()) {
+                    moveDirectory(file, target);
+                } else {
+                    try (InputStream in = new java.io.FileInputStream(file);
+                         FileOutputStream out = new FileOutputStream(target)) {
+                        byte[] buf = new byte[8192];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                    }
+                    file.delete();
+                }
+            }
+        }
+        src.delete();
     }
 
     public static void deleteRecursively(File fileOrDir) {

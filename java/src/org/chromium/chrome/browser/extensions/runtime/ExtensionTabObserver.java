@@ -47,10 +47,6 @@ public class ExtensionTabObserver extends EmptyTabObserver {
                 extensions,
                 urlSpec,
                 runAt,
-                script -> {
-                    if (webContents != null && !webContents.isDestroyed()) {
-                        webContents.evaluateJavaScriptForTests(script, null);
-                    }
-                });
+                script -> org.chromium.chrome.browser.devtools.VodyDevTools.evaluateJavaScriptSafely(webContents, script));
     }
 }

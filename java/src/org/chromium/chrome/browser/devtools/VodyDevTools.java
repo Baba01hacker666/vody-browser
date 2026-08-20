@@ -72,7 +72,7 @@ public class VodyDevTools {
             return;
         }
 
-        webContents.evaluateJavaScriptForTests(DEVTOOLS_INJECTION_SCRIPT, null);
+        evaluateJavaScriptSafely(webContents, DEVTOOLS_INJECTION_SCRIPT);
         Toast.makeText(context, "DevTools activated for current page", Toast.LENGTH_SHORT).show();
     }
 
@@ -81,5 +81,17 @@ public class VodyDevTools {
      */
     public static void openConsoleDialog(Activity activity, Tab tab) {
         new DevToolsConsoleDialog(activity, tab).show();
+    }
+
+    public static void evaluateJavaScriptSafely(WebContents webContents, String script) {
+        if (webContents == null || webContents.isDestroyed()) return;
+        try {
+            webContents.evaluateJavaScriptForTests(script, null);
+        } catch (Throwable t) {
+            try {
+                java.lang.reflect.Method m = webContents.getClass().getMethod("evaluateJavaScript", String.class, Object.class);
+                m.invoke(webContents, script, null);
+            } catch (Throwable ignored) {}
+        }
     }
 }

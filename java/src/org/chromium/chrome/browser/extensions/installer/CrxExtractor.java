@@ -46,24 +46,18 @@ public class CrxExtractor {
                 if (version == 2) {
                     // CRX2: 4-byte pubkey len, 4-byte sig len
                     byte[] headerLenBytes = new byte[8];
-                    bis.read(headerLenBytes);
+                    readFully(bis, headerLenBytes);
                     ByteBuffer bb = ByteBuffer.wrap(headerLenBytes).order(ByteOrder.LITTLE_ENDIAN);
                     int pubKeyLen = bb.getInt();
                     int sigLen = bb.getInt();
                     long skipBytes = (long) pubKeyLen + (long) sigLen;
-                    long skipped = 0;
-                    while (skipped < skipBytes) {
-                        skipped += bis.skip(skipBytes - skipped);
-                    }
+                    skipFully(bis, skipBytes);
                 } else if (version == 3) {
                     // CRX3: 4-byte header length followed by protobuf header
                     byte[] headerLenBytes = new byte[4];
-                    bis.read(headerLenBytes);
+                    readFully(bis, headerLenBytes);
                     int headerLen = ByteBuffer.wrap(headerLenBytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
-                    long skipped = 0;
-                    while (skipped < headerLen) {
-                        skipped += bis.skip(headerLen - skipped);
-                    }
+                    skipFully(bis, headerLen);
                 } else {
                     throw new UnsupportedOperationException("Unsupported CRX version: " + version);
                 }
@@ -106,6 +100,30 @@ public class CrxExtractor {
                 }
                 zis.closeEntry();
             }
+        }
+    }
+
+    private static void readFully(InputStream is, byte[] buffer) throws Exception {
+        int offset = 0;
+        while (offset < buffer.length) {
+            int read = is.read(buffer, offset, buffer.length - offset);
+            if (read == -1) {
+                throw new java.io.EOFException("Unexpected end of CRX stream while reading header");
+            }
+            offset += read;
+        }
+    }
+
+    private static void skipFully(InputStream is, long bytes) throws Exception {
+        long skipped = 0;
+        byte[] dummy = new byte[4096];
+        while (skipped < bytes) {
+            long toRead = Math.min((long) dummy.length, bytes - skipped);
+            int read = is.read(dummy, 0, (int) toRead);
+            if (read == -1) {
+                throw new java.io.EOFException("Unexpected end of CRX stream while skipping header");
+            }
+            skipped += read;
         }
     }
 }

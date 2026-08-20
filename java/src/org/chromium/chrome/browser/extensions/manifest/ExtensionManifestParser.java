@@ -28,11 +28,9 @@ public class ExtensionManifestParser {
             throw new IllegalArgumentException("manifest.json not found in " + extensionDir.getAbsolutePath());
         }
 
-        String jsonString;
-        try (InputStream is = new FileInputStream(manifestFile)) {
-            byte[] buffer = new byte[(int) manifestFile.length()];
-            is.read(buffer);
-            jsonString = new String(buffer, StandardCharsets.UTF_8);
+        String jsonString = readFileToString(manifestFile);
+        if (jsonString == null || jsonString.isEmpty()) {
+            throw new IllegalArgumentException("Empty or unreadable manifest.json");
         }
 
         JSONObject root = new JSONObject(jsonString);
@@ -211,13 +209,14 @@ public class ExtensionManifestParser {
         }
 
         if (enMessages != null && enMessages.exists()) {
-            try (InputStream is = new FileInputStream(enMessages)) {
-                byte[] buffer = new byte[(int) enMessages.length()];
-                is.read(buffer);
-                JSONObject root = new JSONObject(new String(buffer, StandardCharsets.UTF_8));
-                JSONObject item = root.optJSONObject(msgName);
-                if (item != null && item.has("message")) {
-                    return item.getString("message");
+            try {
+                String json = readFileToString(enMessages);
+                if (json != null) {
+                    JSONObject root = new JSONObject(json);
+                    JSONObject item = root.optJSONObject(msgName);
+                    if (item != null && item.has("message")) {
+                        return item.getString("message");
+                    }
                 }
             } catch (Exception ignored) {}
         }
@@ -229,13 +228,31 @@ public class ExtensionManifestParser {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(input.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
+            // Chrome standard: 32 characters in range a-p using nibbles of 16-byte digest
             for (int i = 0; i < 16; i++) {
-                int val = (hash[i] & 0xFF) % 26;
-                sb.append((char) ('a' + val));
+                int high = (hash[i] >> 4) & 0x0F;
+                int low = hash[i] & 0x0F;
+                sb.append((char) ('a' + high));
+                sb.append((char) ('a' + low));
             }
             return sb.toString();
         } catch (Exception e) {
             return "ext" + Math.abs(input.hashCode());
+        }
+    }
+
+    public static String readFileToString(File file) {
+        if (!file.exists()) return null;
+        try (InputStream is = new FileInputStream(file);
+             java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = is.read(buffer)) != -1) {
+                baos.write(buffer, 0, read);
+            }
+            return baos.toString(StandardCharsets.UTF_8.name());
+        } catch (Exception e) {
+            return null;
         }
     }
 }

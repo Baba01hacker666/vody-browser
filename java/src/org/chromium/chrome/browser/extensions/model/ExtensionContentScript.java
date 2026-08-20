@@ -100,13 +100,46 @@ public class ExtensionContentScript {
         }
 
         try {
-            String regex = pattern
-                    .replace(".", "\\.")
-                    .replace("*://", "(https?|file|ftp)://")
-                    .replace("*.", "([^/]+\\.)?")
-                    .replace("/*", "(/.*)?")
-                    .replace("*", ".*");
-            return Pattern.compile("^" + regex + "$");
+            int schemeSep = pattern.indexOf("://");
+            if (schemeSep == -1) {
+                if (pattern.startsWith("file:///")) {
+                    return Pattern.compile("^file:///.*$");
+                }
+                return null;
+            }
+
+            String scheme = pattern.substring(0, schemeSep);
+            String rest = pattern.substring(schemeSep + 3);
+
+            String schemeRegex;
+            if ("*".equals(scheme)) {
+                schemeRegex = "(https?|ftp)";
+            } else {
+                schemeRegex = Pattern.quote(scheme);
+            }
+
+            int pathSep = rest.indexOf('/');
+            String host = pathSep != -1 ? rest.substring(0, pathSep) : rest;
+            String path = pathSep != -1 ? rest.substring(pathSep) : "/*";
+
+            String hostRegex;
+            if ("*".equals(host)) {
+                hostRegex = "[^/]+";
+            } else if (host.startsWith("*.")) {
+                String sub = host.substring(2);
+                hostRegex = "([^/]+\\.)?" + Pattern.quote(sub);
+            } else {
+                hostRegex = Pattern.quote(host);
+            }
+
+            String pathRegex;
+            if ("/*".equals(path)) {
+                pathRegex = "(/.*)?";
+            } else {
+                pathRegex = Pattern.quote(path).replace("\\*", ".*");
+            }
+
+            return Pattern.compile("^" + schemeRegex + "://" + hostRegex + pathRegex + "$");
         } catch (Exception e) {
             return null;
         }
