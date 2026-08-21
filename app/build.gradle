@@ -2,6 +2,12 @@ plugins {
     id 'com.android.application'
 }
 
+// CI (release workflow) injects the signing key material and version via env vars;
+// locally you can override versions with -PversionName=1.2.3 -PversionCode=42.
+def envVersionName = System.getenv("VERSION_NAME") ?: project.findProperty("versionName")
+def envVersionCode = System.getenv("VERSION_CODE") ?: project.findProperty("versionCode")
+def hasReleaseSigning = System.getenv("KEYSTORE_FILE") != null
+
 android {
     namespace 'org.vody.browser'
     compileSdk 35
@@ -10,8 +16,8 @@ android {
         applicationId 'org.vody.browser'
         minSdk 26
         targetSdk 36
-        versionCode 1
-        versionName "1.0.0"
+        versionCode envVersionCode ? envVersionCode.toInteger() : 2
+        versionName envVersionName ?: "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -23,11 +29,27 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            // Populated by the CI release workflow from GitHub secrets
+            // (KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD).
+            if (hasReleaseSigning) {
+                storeFile file(System.getenv("KEYSTORE_FILE"))
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Signed with the release key when CI secrets are present;
+            // falls back to debug signing for local test builds.
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
         }
         debug {
             applicationIdSuffix ".debug"
