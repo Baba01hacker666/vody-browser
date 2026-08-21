@@ -6,57 +6,69 @@
     android:orientation="vertical"
     android:background="?android:colorBackground">
 
-    <!-- Top app bar: logo, address bar, bookmark, go -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <!-- URL pill -->
+    <LinearLayout
+        android:id="@+id/url_pill"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp">
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="2dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="6dp"
+        android:background="@drawable/bg_rounded_field"
+        android:elevation="1dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/security_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search"
+            app:tint="?attr/colorOnSurfaceVariant"
+            android:importantForAccessibility="no" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/vody_logo"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@string/app_name" />
+        <EditText
+            android:id="@+id/url_bar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="@string/address_hint"
+            android:imeOptions="actionGo"
+            android:inputType="textUri"
+            android:singleLine="true"
+            android:textSize="15sp"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurfaceVariant"
+            android:paddingStart="12dp"
+            android:paddingEnd="8dp"
+            android:importantForAutofill="no" />
 
-            <EditText
-                android:id="@+id/url_bar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/address_hint"
-                android:imeOptions="actionGo"
-                android:inputType="textUri"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textColorHint="#B3E5FC"
-                android:importantForAutofill="no" />
+        <ImageButton
+            android:id="@+id/bookmark_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_bookmark_outline"
+            android:scaleType="fitCenter"
+            android:padding="9dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="?attr/colorOnSurfaceVariant"
+            android:contentDescription="@string/add_bookmark" />
 
-            <ImageButton
-                android:id="@+id/bookmark_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_bookmark"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/add_bookmark" />
-
-            <ImageButton
-                android:id="@+id/go_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_forward"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/go" />
-        </LinearLayout>
-    </com.google.android.material.appbar.MaterialToolbar>
+        <ImageButton
+            android:id="@+id/go_btn"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_forward"
+            android:scaleType="fitCenter"
+            android:padding="9dp"
+            android:background="@drawable/bg_go_button"
+            app:tint="?attr/colorOnPrimary"
+            android:contentDescription="@string/go" />
+    </LinearLayout>
 
     <!-- Page load progress -->
     <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -64,21 +76,114 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        app:indicatorColor="@color/white"
-        android:visibility="gone" />
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        app:trackCornerRadius="2dp"
+        app:trackThickness="3dp"
+        app:indicatorColor="?attr/colorPrimary"
+        app:trackColor="@android:color/transparent"
+        android:visibility="invisible" />
 
     <!-- Page content -->
     <org.mozilla.geckoview.GeckoView
         android:id="@+id/geckoview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginTop="4dp" />
 
-    <!-- Bottom navigation bar -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
+    <!-- Bottom toolbar -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
-        app:menu="@menu/bottom_nav" />
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/md_surface"
+        android:baselineAligned="false">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/nav_back"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"
+                android:scaleType="fitCenter"
+                android:padding="11dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="?attr/colorOnSurface"
+                android:contentDescription="@string/menu_back" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/nav_forward"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_forward"
+                android:scaleType="fitCenter"
+                android:padding="11dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="?attr/colorOnSurface"
+                android:contentDescription="@string/menu_forward" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/nav_reload"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_reload"
+                android:scaleType="fitCenter"
+                android:padding="11dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="?attr/colorOnSurface"
+                android:contentDescription="@string/menu_reload" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tab_count_badge"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_tab_count"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:maxLines="1"
+                android:contentDescription="@string/new_tab" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/nav_menu"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_menu"
+                android:scaleType="fitCenter"
+                android:padding="11dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="?attr/colorOnSurface"
+                android:contentDescription="@string/menu_open" />
+        </FrameLayout>
+    </LinearLayout>
 </LinearLayout>

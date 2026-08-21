@@ -28,15 +28,48 @@
     <string name="menu_reload">Reload</string>
     <string name="menu_share">Share</string>
     <string name="home_url">https://www.google.com</string>
+
+    <!-- Menu sheet subtitles -->
+    <string name="new_tab_sub">Open a fresh tab</string>
+    <string name="menu_bookmarks_sub">Saved pages</string>
+    <string name="menu_history_sub">Recently visited</string>
+    <string name="menu_extensions_sub">Add-ons and extensions</string>
+    <string name="menu_devtools_sub">JavaScript console</string>
+    <string name="menu_share_sub">Share this page</string>
+    <string name="menu_settings_sub">Homepage, privacy, data</string>
+
+    <!-- Tab switcher -->
+    <string name="tabs_title">Tabs</string>
+    <string name="close_all">Close all</string>
+
+    <!-- Extensions -->
     <string name="ext_install">Install extension</string>
     <string name="ext_enabled">Enabled</string>
     <string name="ext_disabled">Disabled</string>
-    <string name="ext_install_hint">Enter a Chrome Web Store extension ID or URL</string>
+    <string name="ext_install_hint">Extension ID, store URL or file:// path</string>
     <string name="ext_invalid">Invalid extension ID or URL</string>
     <string name="ext_installed">Extension installed: %s</string>
     <string name="ext_toggle">Toggle</string>
     <string name="ext_remove">Remove</string>
+    <string name="ext_remove_confirm">Remove this extension?</string>
     <string name="ext_none">No extensions installed</string>
+    <string name="ext_empty_title">No extensions yet</string>
+    <string name="ext_empty_sub">Browse the Firefox Add-ons store or install\nfrom a URL, a local .xpi file, an unpacked folder.</string>
+    <string name="ext_from_store_title">Firefox Add-ons store</string>
+    <string name="ext_from_store_sub">Browse addons.mozilla.org and add in one tap</string>
+    <string name="ext_install_prompt_title">Add extension?</string>
+    <string name="ext_install_confirm">Add %1$s to Vody Browser?</string>
+    <string name="ext_permissions_header">It will be able to:</string>
+    <string name="ext_no_permissions">No special permissions required</string>
+    <string name="ext_add">Add</string>
+    <string name="ext_from_url_title">From URL or ID</string>
+    <string name="ext_from_url_sub">Chrome Web Store ID/URL, AMO link or https:// .xpi</string>
+    <string name="ext_from_file_title">From local file (.xpi)</string>
+    <string name="ext_from_file_sub">Pick an extension package from your device</string>
+    <string name="ext_from_dir_title">From unpacked folder</string>
+    <string name="ext_from_dir_sub">Enter a path pushed with adb (e.g. /sdcard/ext/)</string>
+    <string name="ext_copying">Copying extension…</string>
+    <string name="ext_details">Details</string>
     <string name="settings_homepage">Homepage</string>
     <string name="settings_javascript">Enable JavaScript</string>
     <string name="settings_cat_general">General</string>
@@ -65,4 +98,9 @@
     <string name="clear_data_done">Browsing data cleared</string>
     <string name="share_via">Share via</string>
     <string name="tab_count">%1$d tabs</string>
+    <string name="bookmarks_empty_title">No bookmarks yet</string>
+    <string name="bookmarks_empty_sub">Tap the star in the address bar to save a page</string>
+    <string name="history_empty_title">No history yet</string>
+    <string name="history_empty_sub">Pages you visit will show up here</string>
+    <string name="delete_entry">Delete</string>
 </resources>

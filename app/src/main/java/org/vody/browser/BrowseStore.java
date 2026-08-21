@@ -81,6 +81,13 @@ public class BrowseStore {
         writeJson(mHistory, new JSONArray());
     }
 
+    /** Removes a single history entry by URL. */
+    public synchronized void removeHistory(String url) {
+        List<Bookmark> list = getHistory();
+        list.removeIf(x -> x.url.equals(url));
+        writeJson(mHistory, toJsonArray(list));
+    }
+
     // ---- extensions -------------------------------------------------------
     public synchronized List<ExtensionInfo> getExtensions() {
         return readList(mExtensions, ExtensionInfo::fromJson);
@@ -148,6 +155,10 @@ public class BrowseStore {
     }
 
     private void writeList(File f, List<? extends JsonSavable> list) {
+        writeJson(f, toJsonArray(list));
+    }
+
+    private JSONArray toJsonArray(List<? extends JsonSavable> list) {
         JSONArray arr = new JSONArray();
         for (JsonSavable o : list) {
             try {
@@ -156,7 +167,7 @@ public class BrowseStore {
                 Log.w(TAG, "bad entry", e);
             }
         }
-        writeJson(f, arr);
+        return arr;
     }
 
     private JSONArray readJson(File f) {

@@ -61,6 +61,11 @@
             android:exported="true" />
 
         <activity
+            android:name="org.vody.browser.ListActivity"
+            android:label="@string/bookmarks_title"
+            android:exported="false" />
+
+        <activity
             android:name="org.vody.browser.settings.SettingsActivity"
             android:label="@string/menu_settings"
             android:exported="false" />

@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="vody_primary">#1565C0</color>
-    <color name="vody_primary_dark">#0D47A1</color>
-    <color name="vody_accent">#FF6F00</color>
+    <!-- Brand -->
+    <color name="vody_primary">#3E4DE8</color>
+    <color name="vody_primary_dark">#2A38C0</color>
+    <color name="vody_accent">#00B8A2</color>
+
+    <!-- Light scheme -->
+    <color name="md_background">#F6F7FB</color>
+    <color name="md_surface">#FFFFFF</color>
+    <color name="md_surface_container">#EEF0F7</color>
+    <color name="md_surface_container_high">#E6E9F2</color>
+    <color name="md_on_background">#16181D</color>
+    <color name="md_on_surface">#16181D</color>
+    <color name="md_on_surface_variant">#5A6072</color>
+    <color name="md_outline">#D8DBE5</color>
+    <color name="md_primary_container">#E2E6FF</color>
+    <color name="md_on_primary_container">#0B15A0</color>
+    <color name="md_secondary_container">#DFF3F0</color>
+    <color name="md_on_secondary_container">#00504A</color>
+
     <color name="vody_bg">#FFFFFF</color>
-    <color name="vody_surface">#F2F4F7</color>
+    <color name="vody_surface">#FFFFFF</color>
     <color name="vody_text">#1A1A1A</color>
     <!-- WebLibre palette (kept for compatibility) -->
     <color name="purple_200">#FFBB86FC</color>
@@ -14,5 +30,5 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="ic_launcher_background">#0D47A1</color>
+    <color name="ic_launcher_background">#2A38C0</color>
 </resources>

@@ -8,6 +8,7 @@ import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoRuntime;
 import org.mozilla.geckoview.GeckoRuntimeSettings;
 import org.mozilla.geckoview.WebExtension;
+import org.mozilla.geckoview.WebExtensionController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +58,37 @@ public class VodyApplication extends Application {
             registerEvalExtension(runtime);
             // Register the built-in privacy/spoof extension (answers vody-privacy-request).
             registerPrivacyExtension(runtime);
+            // Re-apply user extension state (disabled add-ons) after an engine restart.
+            restoreExtensionState(runtime);
             mRuntime = runtime;
         }
         return mRuntime;
+    }
+
+    /** Applies the persisted enabled/disabled flags to extensions restored by the engine. */
+    private void restoreExtensionState(GeckoRuntime runtime) {
+        try {
+            final List<ExtensionInfo> saved = mStore.getExtensions();
+            if (saved.isEmpty()) return;
+            runtime.getWebExtensionController().list()
+                    .accept(installed -> {
+                        for (WebExtension ext : installed) {
+                            for (ExtensionInfo info : saved) {
+                                if (info.id.equals(ext.id) && !info.enabled) {
+                                    runtime.getWebExtensionController()
+                                            .disable(ext, WebExtensionController.EnableSource.USER);
+                                    break;
+                                }
+                            }
+                        }
+                    })
+                    .exceptionally(th -> {
+                        Log.w(TAG, "extension state restore failed", th);
+                        return null;
+                    });
+        } catch (Exception e) {
+            Log.w(TAG, "extension state restore failed", e);
+        }
     }
 
     private void registerEvalExtension(GeckoRuntime runtime) {

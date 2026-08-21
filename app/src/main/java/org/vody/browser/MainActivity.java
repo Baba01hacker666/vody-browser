@@ -1,23 +1,29 @@
 package org.vody.browser;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.geckoview.GeckoView;
 import org.mozilla.geckoview.WebExtension;
@@ -33,72 +39,136 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private GeckoView mGeckoView;
     private EditText mUrlBar;
+    private ImageView mSecurityIcon;
+    private ImageButton mBookmarkBtn;
+    private TextView mTabCountBadge;
     private VodyApplication mApp;
     private final List<Tab> mTabs = new ArrayList<>();
     private int mActive = -1;
     private boolean mCanGoBack = false;
     private boolean mCanGoForward = false;
-    private com.google.android.material.progressindicator.LinearProgressIndicator mProgress;
+    private View mProgress;
+    private String mHomepage;
+    private BottomSheetDialog mTabSheet;
 
     @Override
+    @SuppressLint("NonConstantResourceId")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mApp = (VodyApplication) getApplication();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mHomepage = getSharedPreferences("vody", 0)
+                .getString("homepage", getString(R.string.home_url));
 
         mGeckoView = findViewById(R.id.geckoview);
-        mGeckoView.setSession(createTab(null).getSession());
-
         mUrlBar = findViewById(R.id.url_bar);
-        ImageButton go = findViewById(R.id.go_btn);
-        go.setOnClickListener(v -> navigate(mUrlBar.getText().toString()));
+        mSecurityIcon = findViewById(R.id.security_icon);
+        mBookmarkBtn = findViewById(R.id.bookmark_btn);
+        mTabCountBadge = findViewById(R.id.tab_count_badge);
+        mProgress = findViewById(R.id.progress);
+
         mUrlBar.setOnEditorActionListener((v, actionId, event) -> {
             navigate(mUrlBar.getText().toString());
             return true;
         });
+        mBookmarkBtn.setOnClickListener(v -> toggleBookmark());
+        findViewById(R.id.go_btn).setOnClickListener(v -> navigate(mUrlBar.getText().toString()));
 
-        ImageButton bookmarkBtn = findViewById(R.id.bookmark_btn);
-        bookmarkBtn.setOnClickListener(v -> toggleBookmark());
+        setupInstallPrompt();
 
-        final com.google.android.material.progressindicator.LinearProgressIndicator progress =
-                findViewById(R.id.progress);
-        mProgress = progress;
+        ImageButton back = findViewById(R.id.nav_back);
+        ImageButton fwd = findViewById(R.id.nav_forward);
+        ImageButton reload = findViewById(R.id.nav_reload);
+        back.setOnClickListener(v -> { GeckoSession s = currentSession(); if (s != null && mCanGoBack) s.goBack(); });
+        fwd.setOnClickListener(v -> { GeckoSession s = currentSession(); if (s != null) s.goForward(); });
+        reload.setOnClickListener(v -> { GeckoSession s = currentSession(); if (s != null) s.reload(); });
+        findViewById(R.id.tab_count_badge).setOnClickListener(v -> openTabSwitcher());
+        findViewById(R.id.nav_menu).setOnClickListener(v -> openMenuSheet());
 
-        // Bottom navigation bar: back / forward / reload / new tab / menu.
-        BottomNavigationView nav = findViewById(R.id.bottom_nav);
-        nav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_back) {
-                if (mCanGoBack && currentSession() != null) currentSession().goBack();
-                return true;
-            } else if (id == R.id.nav_forward) {
-                if (currentSession() != null) currentSession().goForward();
-                return true;
-            } else if (id == R.id.nav_reload) {
-                if (currentSession() != null) currentSession().reload();
-                return true;
-            } else if (id == R.id.nav_tabs) {
-                newTab();
-                return true;
-            } else if (id == R.id.nav_menu) {
-                openMenuSheet();
-                return true;
-            }
-            return false;
-        });
+        createTab(null);
 
-        // Deep-link / VIEW intent: open the supplied URL in a new tab.
-        Intent i = getIntent();
-        if (i != null && Intent.ACTION_VIEW.equals(i.getAction()) && i.getData() != null) {
-            openUrl(i.getData().toString());
-        } else {
-            openUrl(getString(R.string.home_url));
+        // Deep-link / VIEW intent: open the supplied URL in the active tab.
+        handleIntent(getIntent());
+        if (mTabs.get(mActive).getUrl().isEmpty()) {
+            loadInActive(mHomepage);
         }
+        updateChrome();
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    /** Routes VIEW deep-links and "open_url" extras (from bookmarks/history/store screens). */
+    private void handleIntent(Intent i) {
+        if (i == null) return;
+        String url = null;
+        if (Intent.ACTION_VIEW.equals(i.getAction()) && i.getData() != null) {
+            url = i.getData().toString();
+        } else if (i.getStringExtra("open_url") != null) {
+            if (i.getBooleanExtra("new_tab", false)) newTab();
+            url = i.getStringExtra("open_url");
+        }
+        if (!TextUtils.isEmpty(url)) loadInActive(url);
+    }
+
+    // ---- Firefox Add-ons store install flow ------------------------------------
+    // While browsing addons.mozilla.org, tapping "Add to Firefox" triggers this
+    // prompt through GeckoView's WebExtensionController; we confirm with the user
+    // and let the engine download + install the .xpi.
+
+    /** Shows a confirmation dialog when a site requests to install an extension. */
+    private void setupInstallPrompt() {
+        mApp.getRuntime().getWebExtensionController().setPromptDelegate(
+                new org.mozilla.geckoview.WebExtensionController.PromptDelegate() {
+                    @NonNull
+                    @Override
+                    public GeckoResult<WebExtension.PermissionPromptResponse> onInstallPromptRequest(
+                            @NonNull WebExtension extension,
+                            @Nullable String[] permissions,
+                            @Nullable String[] origins) {
+                        GeckoResult<WebExtension.PermissionPromptResponse> result = new GeckoResult<>();
+                        runOnUiThread(() -> showInstallConfirmDialog(extension, permissions, result));
+                        return result;
+                    }
+                });
+    }
+
+    private void showInstallConfirmDialog(WebExtension ext, String[] permissions,
+                                          GeckoResult<WebExtension.PermissionPromptResponse> result) {
+        WebExtension.PermissionPromptResponse deny = new WebExtension.PermissionPromptResponse(false, false);
+        if (isDestroyed() || isFinishing()) {
+            result.complete(deny);
+            return;
+        }
+        StringBuilder msg = new StringBuilder(getString(R.string.ext_install_confirm,
+                ext.metaData != null && ext.metaData.name != null ? ext.metaData.name : ext.id));
+        if (ext.metaData != null && ext.metaData.version != null) {
+            msg.append("\n\nv").append(ext.metaData.version);
+        }
+        int count = permissions == null ? 0 : permissions.length;
+        msg.append("\n\n").append(count == 0
+                ? getString(R.string.ext_no_permissions)
+                : getString(R.string.ext_permissions_header));
+        for (int i = 0; count > 0 && i < count; i++) {
+            msg.append("\n• ").append(permissions[i]);
+        }
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.ext_install_prompt_title)
+                .setMessage(msg)
+                .setPositiveButton(R.string.ext_add,
+                        (d, w) -> result.complete(new WebExtension.PermissionPromptResponse(true, false)))
+                .setNegativeButton(android.R.string.cancel,
+                        (d, w) -> result.complete(deny))
+                .setOnCancelListener(d -> result.complete(deny))
+                .show();
+    }
+
+    // ---- tabs ---------------------------------------------------------------
 
     /** Creates a new tab (GeckoSession) bound to the shared runtime. */
     private Tab createTab(String url) {
@@ -119,15 +189,18 @@ public class MainActivity extends AppCompatActivity {
             public void onPageStart(GeckoSession session, String url) {
                 tab.setUrl(url);
                 if (isActive(tab)) runOnUiThread(() -> {
-                    mUrlBar.setText(url);
-                    if (mProgress != null) mProgress.setVisibility(View.VISIBLE);
+                    if (!mUrlBar.hasFocus()) mUrlBar.setText(prettyUrl(url));
+                    mProgress.setVisibility(View.VISIBLE);
                 });
             }
 
             @Override
             public void onPageStop(GeckoSession session, boolean success) {
                 mApp.getStore().addHistory(tab.getTitle(), tab.getUrl());
-                if (isActive(tab) && mProgress != null) mProgress.setVisibility(View.GONE);
+                if (isActive(tab)) runOnUiThread(() -> {
+                    mProgress.setVisibility(View.INVISIBLE);
+                    updateBookmarkStar();
+                });
             }
         });
         s.setNavigationDelegate(new GeckoSession.NavigationDelegate() {
@@ -136,19 +209,22 @@ public class MainActivity extends AppCompatActivity {
                                           @NonNull java.util.List<GeckoSession.PermissionDelegate.ContentPermission> perms,
                                           Boolean isReload) {
                 tab.setUrl(url);
-                if (isActive(tab)) runOnUiThread(() -> mUrlBar.setText(url));
+                if (isActive(tab)) runOnUiThread(() -> {
+                    if (!mUrlBar.hasFocus()) mUrlBar.setText(prettyUrl(url));
+                    updateSecurityIcon(url);
+                });
             }
 
             @Override
             public void onCanGoBack(GeckoSession session, boolean canGoBack) {
                 mCanGoBack = canGoBack;
-                runOnUiThread(() -> updateNavState(session));
+                runOnUiThread(() -> setNavEnabled(R.id.nav_back, canGoBack));
             }
 
             @Override
             public void onCanGoForward(GeckoSession session, boolean canGoForward) {
                 mCanGoForward = canGoForward;
-                runOnUiThread(() -> updateNavState(session));
+                runOnUiThread(() -> setNavEnabled(R.id.nav_forward, canGoForward));
             }
         });
         s.setContentDelegate(new GeckoSession.ContentDelegate() {
@@ -163,127 +239,243 @@ public class MainActivity extends AppCompatActivity {
         return mActive >= 0 && mActive < mTabs.size() && mTabs.get(mActive) == tab;
     }
 
-    /** Normalises user input (searches vs URLs) and loads it in the active tab. */
-    private void navigate(String input) {
-        if (TextUtils.isEmpty(input)) return;
-        String url;
-        if (URLUtil.isValidUrl(input) || input.startsWith("about:")) {
-            url = input;
-        } else if (input.contains(".") && !input.contains(" ")) {
-            url = "https://" + input;
-        } else {
-            url = "https://www.google.com/search?q=" + input.replace(" ", "+");
-        }
-        openUrl(url);
-    }
-
-    private void openUrl(String url) {
+    private void loadInActive(String url) {
         Tab tab = (mActive >= 0) ? mTabs.get(mActive) : createTab(null);
         tab.setUrl(url);
         mGeckoView.setSession(tab.getSession());
-        mUrlBar.setText(url);
         mApp.setActiveSession(tab.getSession());
         tab.getSession().loadUri(url);
     }
 
-    private void newTab() {
-        Tab t = createTab(getString(R.string.home_url));
+    private void switchToTab(int pos) {
+        if (pos < 0 || pos >= mTabs.size()) return;
+        mActive = pos;
+        Tab t = mTabs.get(pos);
         mGeckoView.setSession(t.getSession());
+        mApp.setActiveSession(t.getSession());
+        mUrlBar.setText(prettyUrl(t.getUrl()));
+        updateSecurityIcon(t.getUrl());
+        updateBookmarkStar();
+        updateChrome();
+    }
+
+    /** Opens a brand-new tab loading the configured homepage and switches to it. */
+    private void newTab() {
+        Tab t = createTab(mHomepage);
+        mGeckoView.setSession(t.getSession());
+        mApp.setActiveSession(t.getSession());
         t.getSession().loadUri(t.getUrl());
+        updateChrome();
         Toast.makeText(this, getString(R.string.tab_count, mTabs.size()), Toast.LENGTH_SHORT).show();
     }
 
-    private void closeActiveTab() {
-        if (mTabs.isEmpty()) return;
-        Tab t = mTabs.remove(mActive);
+    private void closeTab(int pos) {
+        if (pos < 0 || pos >= mTabs.size()) return;
+        Tab t = mTabs.remove(pos);
         t.getSession().close();
         if (mTabs.isEmpty()) {
             finish();
             return;
         }
-        mActive = Math.max(0, mActive - 1);
-        mGeckoView.setSession(mTabs.get(mActive).getSession());
-        mUrlBar.setText(mTabs.get(mActive).getUrl());
+        int next = Math.max(0, Math.min(pos, mTabs.size() - 1));
+        mActive = next;
+        switchToTab(next);
     }
 
-    // ---- menu -------------------------------------------------------------
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+    // ---- chrome (url bar / badges / nav buttons) -----------------------------
+
+    /** Strips https:// and trailing slash so the address bar reads clean. */
+    private static String prettyUrl(String url) {
+        if (url == null) return "";
+        String out = url;
+        if (out.startsWith("https://")) out = out.substring(8);
+        else if (out.startsWith("http://")) out = out.substring(7);
+        while (out.endsWith("/") && !out.equals("/")) out = out.substring(0, out.length() - 1);
+        return out;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_new_tab) {
-            newTab();
-            return true;
-        } else if (id == R.id.action_bookmarks) {
-            showBookmarks();
-            return true;
-        } else if (id == R.id.action_history) {
-            showHistory();
-            return true;
-        } else if (id == R.id.action_devtools) {
-            DevToolsConsoleDialog.show(this, currentSession());
-            return true;
-        } else if (id == R.id.action_extensions) {
-            startActivity(new Intent(this, org.vody.browser.extensions.ExtensionManagerActivity.class));
-            return true;
-        } else if (id == R.id.action_share) {
-            shareCurrent();
-            return true;
-        } else if (id == R.id.action_settings) {
-            startActivity(new Intent(this, org.vody.browser.settings.SettingsActivity.class));
-            return true;
+    private void updateSecurityIcon(String url) {
+        boolean secure = url != null && url.startsWith("https://");
+        mSecurityIcon.setImageResource(secure ? R.drawable.ic_lock : R.drawable.ic_search);
+    }
+
+    private void updateBookmarkStar() {
+        Tab t = currentTab();
+        if (t == null) return;
+        boolean marked = mApp.getStore().isBookmarked(t.getUrl());
+        mBookmarkBtn.setImageResource(marked ? R.drawable.ic_bookmark : R.drawable.ic_bookmark_outline);
+        mBookmarkBtn.setColorFilter(ContextCompat.getColor(this,
+                marked ? R.color.vody_accent : R.color.md_on_surface_variant));
+    }
+
+    private void updateChrome() {
+        mTabCountBadge.setText(String.valueOf(mTabs.size()));
+        setNavEnabled(R.id.nav_back, mCanGoBack);
+        setNavEnabled(R.id.nav_forward, mCanGoForward);
+        Tab t = currentTab();
+        updateSecurityIcon(t == null ? "" : t.getUrl());
+        updateBookmarkStar();
+    }
+
+    private void setNavEnabled(int buttonId, boolean enabled) {
+        View v = findViewById(buttonId);
+        v.setEnabled(enabled);
+        v.setAlpha(enabled ? 1f : 0.35f);
+    }
+
+    // ---- navigation ----------------------------------------------------------
+
+    /** Normalises user input (searches vs URLs) and loads it in the active tab. */
+    private void navigate(String input) {
+        if (TextUtils.isEmpty(input)) return;
+        String trimmed = input.trim();
+        String url;
+        if (URLUtil.isValidUrl(trimmed) || trimmed.startsWith("about:")) {
+            url = trimmed;
+        } else if (trimmed.contains(".") && !trimmed.contains(" ")) {
+            url = "https://" + trimmed;
+        } else {
+            url = "https://www.google.com/search?q=" + trimmed.replace(" ", "+");
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void openMenuSheet() {
-        CharSequence[] items = new CharSequence[]{
-                getString(R.string.menu_bookmarks),
-                getString(R.string.menu_history),
-                getString(R.string.menu_devtools),
-                getString(R.string.menu_extensions),
-                getString(R.string.menu_share),
-                getString(R.string.menu_settings)
-        };
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.menu_open)
-                .setItems(items, (d, which) -> {
-                    switch (which) {
-                        case 0: showBookmarks(); break;
-                        case 1: showHistory(); break;
-                        case 2: DevToolsConsoleDialog.show(this, currentSession()); break;
-                        case 3: startActivity(new Intent(this, org.vody.browser.extensions.ExtensionManagerActivity.class)); break;
-                        case 4: shareCurrent(); break;
-                        case 5: startActivity(new Intent(this, org.vody.browser.settings.SettingsActivity.class)); break;
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+        loadInActive(url);
+        View focus = getCurrentFocus();
+        if (focus != null) focus.clearFocus();
     }
 
     private GeckoSession currentSession() {
         return (mActive >= 0 && mActive < mTabs.size()) ? mTabs.get(mActive).getSession() : null;
     }
 
-    /** Enables / disables back + forward nav items based on real navigation state. */
-    private void updateNavState(GeckoSession session) {
-        BottomNavigationView nav = findViewById(R.id.bottom_nav);
-        if (nav == null) return;
-        Menu menu = nav.getMenu();
-        MenuItem back = menu.findItem(R.id.nav_back);
-        MenuItem fwd = menu.findItem(R.id.nav_forward);
-        if (back != null) back.setEnabled(mCanGoBack);
-        if (fwd != null) fwd.setEnabled(mCanGoForward);
+    private Tab currentTab() {
+        return (mActive >= 0 && mActive < mTabs.size()) ? mTabs.get(mActive) : null;
     }
 
+    // ---- menu sheet ------------------------------------------------------------
+
+    private void openMenuSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this);
+        View v = LayoutInflater.from(this).inflate(R.layout.sheet_menu, null);
+        bindMenuRow(sheet, v, R.id.menu_row_new_tab, () -> { sheet.dismiss(); newTab(); });
+        bindMenuRow(sheet, v, R.id.menu_row_bookmarks, () -> { sheet.dismiss(); startActivity(listIntent(true)); });
+        bindMenuRow(sheet, v, R.id.menu_row_history, () -> { sheet.dismiss(); startActivity(listIntent(false)); });
+        bindMenuRow(sheet, v, R.id.menu_row_extensions,
+                () -> { sheet.dismiss(); startActivity(new Intent(this, org.vody.browser.extensions.ExtensionManagerActivity.class)); });
+        bindMenuRow(sheet, v, R.id.menu_row_devtools,
+                () -> { sheet.dismiss(); DevToolsConsoleDialog.show(this, currentSession()); });
+        bindMenuRow(sheet, v, R.id.menu_row_share, () -> { sheet.dismiss(); shareCurrent(); });
+        bindMenuRow(sheet, v, R.id.menu_row_settings,
+                () -> { sheet.dismiss(); startActivity(new Intent(this, org.vody.browser.settings.SettingsActivity.class)); });
+        sheet.setContentView(v);
+        sheet.show();
+    }
+
+    private interface RowAction { void run(); }
+
+    private void bindMenuRow(BottomSheetDialog sheet, View root, int rowId, RowAction action) {
+        root.findViewById(rowId).setOnClickListener(v -> action.run());
+    }
+
+    private Intent listIntent(boolean bookmarks) {
+        Intent i = new Intent(this, ListActivity.class);
+        i.putExtra(ListActivity.EXTRA_MODE, bookmarks ? ListActivity.MODE_BOOKMARKS : ListActivity.MODE_HISTORY);
+        return i;
+    }
+
+    // ---- tab switcher sheet -----------------------------------------------------
+
+    private void openTabSwitcher() {
+        if (mTabSheet != null && mTabSheet.isShowing()) mTabSheet.dismiss();
+        mTabSheet = new BottomSheetDialog(this);
+        View v = LayoutInflater.from(this).inflate(R.layout.sheet_tabs, null);
+        RecyclerView list = v.findViewById(R.id.tabs_list);
+        list.setLayoutManager(new LinearLayoutManager(this));
+
+        TextView closeAll = v.findViewById(R.id.close_all_btn);
+        TextView newTab = v.findViewById(R.id.new_tab_btn);
+        TextView title = v.findViewById(R.id.tabs_title);
+
+        Runnable refresh = () -> {
+            title.setText(getString(R.string.tab_count, mTabs.size()));
+            ((TabSheetAdapter) list.getAdapter()).notifyDataSetChanged();
+        };
+
+        TabSheetAdapter adapter = new TabSheetAdapter(refresh);
+        list.setAdapter(adapter);
+
+        closeAll.setOnClickListener(x -> {
+            mTabSheet.dismiss();
+            List<Tab> old = new ArrayList<>(mTabs);
+            mTabs.clear();
+            for (Tab t : old) t.getSession().close();
+            createTab(null);
+            loadInActive(mHomepage);
+        });
+        newTab.setOnClickListener(x -> {
+            mTabSheet.dismiss();
+            newTab();
+        });
+
+        mTabSheet.setContentView(v);
+        mTabSheet.show();
+    }
+
+    private class TabSheetAdapter extends RecyclerView.Adapter<TabVH> {
+        private final Runnable mRefresh;
+
+        TabSheetAdapter(Runnable refresh) { mRefresh = refresh; }
+
+        @NonNull
+        @Override
+        public TabVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tab_row, parent, false);
+            return new TabVH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull TabVH h, int pos) {
+            Tab t = mTabs.get(pos);
+            h.title.setText(t.getTitle().isEmpty()
+                    ? prettyUrl(t.getUrl()) : t.getTitle());
+            h.url.setText(prettyUrl(t.getUrl()));
+            h.itemView.setAlpha(pos == mActive ? 1f : 0.6f);
+            h.itemView.setOnClickListener(v -> {
+                mTabSheet.dismiss();
+                switchToTab(h.getBindingAdapterPosition());
+            });
+            h.close.setOnClickListener(v -> {
+                int p = h.getBindingAdapterPosition();
+                if (p < 0) return;
+                closeTab(p);
+                if (!mTabs.isEmpty() && mTabSheet != null && mTabSheet.isShowing()) {
+                    mRefresh.run();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mTabs.size();
+        }
+    }
+
+    private static class TabVH extends RecyclerView.ViewHolder {
+        final TextView title;
+        final TextView url;
+        final ImageView close;
+
+        TabVH(@NonNull View v) {
+            super(v);
+            title = v.findViewById(R.id.tab_title);
+            url = v.findViewById(R.id.tab_url);
+            close = v.findViewById(R.id.tab_close);
+        }
+    }
+
+    // ---- bookmark / share -------------------------------------------------------
+
     private void toggleBookmark() {
-        Tab t = (mActive >= 0) ? mTabs.get(mActive) : null;
-        if (t == null) return;
+        Tab t = currentTab();
+        if (t == null || TextUtils.isEmpty(t.getUrl())) return;
         BrowseStore store = mApp.getStore();
         String url = t.getUrl();
         String title = t.getTitle();
@@ -291,13 +483,14 @@ public class MainActivity extends AppCompatActivity {
             store.removeBookmark(url);
             Toast.makeText(this, R.string.bookmark_removed, Toast.LENGTH_SHORT).show();
         } else {
-            store.addBookmark(new Bookmark(title, url));
+            store.addBookmark(new Bookmark(title.isEmpty() ? prettyUrl(url) : title, url));
             Toast.makeText(this, R.string.bookmark_added, Toast.LENGTH_SHORT).show();
         }
+        updateBookmarkStar();
     }
 
     private void shareCurrent() {
-        Tab t = (mActive >= 0) ? mTabs.get(mActive) : null;
+        Tab t = currentTab();
         if (t == null) return;
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
@@ -305,41 +498,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(share, getString(R.string.share_via)));
     }
 
-    private void showBookmarks() {
-        List<Bookmark> list = mApp.getStore().getBookmarks();
-        if (list.isEmpty()) {
-            Toast.makeText(this, R.string.no_bookmarks, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        CharSequence[] items = new CharSequence[list.size()];
-        for (int i = 0; i < list.size(); i++) items[i] = list.get(i).title + "\n" + list.get(i).url;
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.bookmarks_title)
-                .setItems(items, (d, which) -> openUrl(list.get(which).url))
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
-    }
-
-    private void showHistory() {
-        List<Bookmark> list = mApp.getStore().getHistory();
-        if (list.isEmpty()) {
-            Toast.makeText(this, R.string.no_history, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        CharSequence[] items = new CharSequence[list.size()];
-        for (int i = 0; i < list.size(); i++) items[i] = list.get(i).title + "\n" + list.get(i).url;
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.history_title)
-                .setItems(items, (d, which) -> openUrl(list.get(which).url))
-                .setPositiveButton(R.string.clear_history, (d, w) -> {
-                    mApp.getStore().clearHistory();
-                    Toast.makeText(this, R.string.clear_history, Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
-    }
-
     // Pressing back navigates the active session if it can go back.
+    @SuppressWarnings("deprecation")
     @Override
     public void onBackPressed() {
         GeckoSession s = currentSession();

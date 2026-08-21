@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="18dp"
+    android:background="@color/md_surface">
+
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_drag_handle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/menu_open"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp" />
+
+    <!-- Rows are wired by id in MainActivity -->
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_new_tab">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_plus" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/new_tab" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/new_tab_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_bookmarks">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_bookmark" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/menu_bookmarks" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/menu_bookmarks_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_history">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_history" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/menu_history" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/menu_history_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_extensions">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_extension" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/menu_extensions" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/menu_extensions_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_devtools">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_devtools" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/menu_devtools" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/menu_devtools_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_share">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_share" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/menu_share" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/menu_share_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/VodyMenuRow" android:id="@+id/menu_row_settings">
+        <FrameLayout style="@style/VodyMenuIconWrap">
+            <ImageView style="@style/VodyMenuIcon" android:src="@drawable/ic_settings" />
+        </FrameLayout>
+        <LinearLayout style="@style/VodyMenuTexts">
+            <TextView style="@style/VodyMenuTitle" android:text="@string/menu_settings" />
+            <TextView style="@style/VodyMenuSub" android:text="@string/menu_settings_sub" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

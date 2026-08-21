@@ -3,6 +3,7 @@ package org.vody.browser;
 import android.app.Dialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,7 +55,14 @@ public final class DevToolsConsoleDialog implements VodyApplication.EvalListener
         app.addEvalListener(this);
         mDialog.setOnDismissListener(d -> app.removeEvalListener(this));
         mDialog.setContentView(v);
-        mDialog.setTitle(R.string.devtools_title);
+        // Bottom-sheet presentation: full width, anchored to the bottom edge.
+        android.view.Window w = mDialog.getWindow();
+        if (w != null) {
+            w.setBackgroundDrawableResource(android.R.color.transparent);
+            w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            w.setGravity(android.view.Gravity.BOTTOM);
+            w.setWindowAnimations(android.R.style.Animation_Activity);
+        }
         mDialog.show();
     }
 
